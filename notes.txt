@@ -1,0 +1,18 @@
+#This is my nea
+# Make a neural network
+# All notes will be made here
+#each part of the project will have a different file
+
+
+LSTM Model
+
+- Load data
+- Define hyperparameters
+- Initialize model parameters (Wx, Wh, b, Why, by)
+- While loop
+	. Get next data batch
+	. (Test sample with current model every N iterations)
+	. Forward pass
+	. Backward pass
+	. Gradient update
+
