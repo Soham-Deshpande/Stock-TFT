@@ -1,7 +1,6 @@
 # All Activation Functions here
 import numpy as np
 
-
 class Sigmoid():
     def __int__(self):
         super().__init__()

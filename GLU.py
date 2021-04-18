@@ -8,4 +8,10 @@ class GLU():
     def __init__(self):
         super().__init__()
 
+    def matrix_a(self):
+        pass
+
+    def matrix_b(self):
+        
+
 

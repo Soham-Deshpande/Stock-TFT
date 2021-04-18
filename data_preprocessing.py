@@ -6,3 +6,4 @@ class Normalise():
 
     def normalise(self,x):
 
+
