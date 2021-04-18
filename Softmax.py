@@ -12,5 +12,5 @@ class Softmax():
         s = s[:, np.newaxis]  # necessary step to do broadcasting
         e_x = np.exp(z - s)
         div = np.sum(e_x, axis=1)
-        div = div[:, np.newaxis]  # dito
+        div = div[:, np.newaxis] # dito
         return e_x / div
