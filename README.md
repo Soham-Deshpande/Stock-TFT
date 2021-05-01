@@ -1,3 +1,3 @@
 # NEA
 
-Stock price prediction using a Temporal Fusion Transformer
+Deep stock predictions using a Temporal Fusion Transformer
