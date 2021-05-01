@@ -8,4 +8,3 @@ import theano as th
 class nn():
     def __int__(self):
         super().__init__()
-    def
