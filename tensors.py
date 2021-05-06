@@ -19,3 +19,4 @@ print(' ')
 
 print("With numpy kron: ")
 print(np.kron(v1, v2))
+
