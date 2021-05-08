@@ -1,47 +1,66 @@
+# ---------------------------------------------------#
+#
+#   File       : Data-Preprocessing.py
+#   Author     : Soham Deshpande
+#   Date       : May 2021
+#   Description: Handle CSV files
+#                Normalise the dataset so that all
+#                values lie in between 0 and 1
+#
+
+# ----------------------------------------------------#
+
 import pandas as pd
 import numpy as np
-import datetime
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 
+class CSVHandler:
+    def __init__(self, filename, header):
+        self.data = pd.read_csv(filename, header=header)
 
-#explain why i normalised the dataset
+    # @property
+    def read(self):
+        return self.data
 
-#time to normalise this dataset from 0 to 1
+    @property
+    def datatype(self):
+        return type(self.data)
 
-# class Normalise():
-#     def __int__(self):
-#         super().__init__()
-#
-#     def normalise(self,x):
-#
+    @property
+    def datahead(self):
+        return self.data.head()
 
-
-
-columns = ['Date', 'Open', 'High', 'Low', 'Close']
-
-df = pd.read_csv(r'C:\Users\soham\PycharmProjects\NEA\Data\Testing-Data.csv', header = 0)
-
-#print(type(df))
-#print(df.head())
-date_raw = df['Date']
-open = df['Open']
-high = df['High']
-low = df['Low']
-close = df['Close']
-volume = df['Volume']
-date = [datetime.datetime.strptime(d, '%m/%d/%y') for d in date_raw]
-#print(open)
+    def extractcolumns(self, column):
+        return self.data[column].tolist()
 
 
+def splitcolumns(filename, headers, columns):
+    rawdata = CSVHandler(filename, headers)
+    datalist = []
+    print(len(columns))
+    for i in columns:
+        columni = rawdata.extractcolumns(str(i))
+        datalist.append(columni)
+    return datalist
 
-print(volume)
-norm = np.linalg.norm(volume)
-#print(norm)
-normalised = volume/norm
-print(normalised)
 
-plt.figure(figsize=(13,10), dpi= 150)
-sns.distplot(normalised, color="darkblue",bins=400)
-plt.show()
+class Normalise:
+    def __int__(self):
+        super().__init__()
+
+    def normalise(self, rdatasplit):
+        self.data = rdatasplit
+        self.norm = np.linalg.norm(rdatasplit)
+        self.normalised = rdatasplit / self.norm
+        return self.normalised.tolist()
+
+
+def normalisedata(columnnames):
+    rdata = splitcolumns(r'C:\Users\soham\PycharmProjects\NEA\Data\Testing-Data.csv', 0, columnnames)
+    normal = Normalise()  # rawdata
+    ndata = normal.normalise(rdata)  # normalised data
+    return ndata
+
+
+ColumnNames = ['Open', 'Open', 'High', 'Low', 'Close']
+print(normalisedata(ColumnNames))
