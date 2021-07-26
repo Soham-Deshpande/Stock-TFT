@@ -48,3 +48,34 @@ class ELU:
 
     def elu_deriv(self, z, alpha):
         return 1 if z > 0 else alpha * np.exp(z)
+
+
+class Sinh:
+    def __init__(self):
+        super().__init__()
+
+    def sinh(self,x):
+        #doublesinh = np.exp(x) – np.exp(-x)
+        comp1 = np.exp(x)
+        comp2 = np.exp(-x)
+        comp3 = 0.5 * (comp1-comp2)
+        return comp3
+
+    def sinh_deriv(self,x):
+        # doublesinh = np.exp(x) – np.exp(-x)
+        comp1 = np.exp(x)
+        comp2 = np.exp(-x)
+        final = 0.5 * (comp1 + comp2)
+        return final
+
+
+
+
+x = Sinh()
+print(x.sinh_deriv(1))
+const = 1
+tanh = (x.sinh(const))/(x.sinh_deriv(const))
+print(tanh)
+#dont need cosh function as deriv of sinh is cosh
+# tanh can be worked out by doing sinh / d/dx{sinh}
+

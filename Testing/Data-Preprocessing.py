@@ -54,6 +54,22 @@ class Normalise:
         self.normalised = rdatasplit / self.norm
         return self.normalised.tolist()
 
+    def batchnormforward(self, gamma, beta, eps=1e-5):
+        N, D = self.shape
+
+        sample_mean = self.mean(axis=0)
+        sample_var = self.var(axis=0)
+
+        std = np.sqrt(sample_var + eps)
+        x_centered = self - sample_mean
+        x_norm = x_centered / std
+        out = gamma * x_norm + beta
+
+        cache = (x_norm, x_centered, std, gamma)
+
+        return out, cache
+
+
 
 def normalisedata(columnnames):
     rdata = splitcolumns(r'C:\Users\soham\PycharmProjects\NEA\Data\Testing-Data.csv', 0, columnnames)
@@ -61,6 +77,9 @@ def normalisedata(columnnames):
     ndata = normal.normalise(rdata)  # normalised data
     return ndata
 
-
+#
 ColumnNames = ['Open', 'Open', 'High', 'Low', 'Close']
-print(normalisedata(ColumnNames))
+test = normalisedata(ColumnNames)
+
+df = pd.DataFrame(test)
+print(df)

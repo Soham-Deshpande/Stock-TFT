@@ -1,9 +1,15 @@
-#Gated Linear Unit
-from Activation_functions import Sigmoid
+# ---------------------------------------------------#
+#
+#   File       : GLU.py
+#   Author     : Soham Deshpande
+#   Date       : July 2021
+#   Description: Gated Linear Unit
+#
+#
+#
 
+# ----------------------------------------------------#
 
-
-# GLU()
 class GLU():
     def __init__(self):
         super().__init__()
@@ -12,6 +18,8 @@ class GLU():
         pass
 
     def matrix_b(self):
+        pass
+
         
 
 

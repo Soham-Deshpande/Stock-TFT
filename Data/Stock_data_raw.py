@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 
 def graphing():
     columns = ['Date', 'Open', 'High', 'Low', 'Close']
-    df = pd.read_csv(r'C:\Users\soham\PycharmProjects\NEA\NEAFTSE2010-21.csv', header = 0)
+    df = pd.read_csv(r'C:\Users\soham\PycharmProjects\NEA\Data\Testing-Data.csv', header = 0)
     #df = df.iloc[::-1]
     print(type(df))
     print(df.head())
@@ -23,7 +23,7 @@ def graphing():
     high = df['High']
     low = df['Low']
     close = df['Close']
-    date = [datetime.datetime.strptime(d, '%d/%m/%Y') for d in date_raw]
+    date = [datetime.datetime.strptime(d, '%m/%d/%Y') for d in date_raw]
 
     print(reduce(lambda x, y: (max(x[0], y - x[1]), y), close, (0, close[0]))[0])
 
@@ -53,3 +53,4 @@ def graphing():
     plt.xticks(np.arange(0, 1857, 300), df['Date'][0:1857:300])
     plt.legend()
     plt.show()
+graphing()
