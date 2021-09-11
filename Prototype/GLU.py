@@ -7,8 +7,9 @@
 #
 #
 #
-
 # ----------------------------------------------------#
+from Activation_functions import Sigmoid
+
 
 class GLU():
     def __init__(self):
@@ -19,6 +20,7 @@ class GLU():
 
     def matrix_b(self):
         pass
+
 
         
 

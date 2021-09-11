@@ -34,4 +34,7 @@ class TimeDistributed(nn.Module):
 
         return y
 
+
+
+
 #credit to https://discuss.pytorch.org/t/any-pytorch-function-can-work-as-keras-timedistributed/1346/4

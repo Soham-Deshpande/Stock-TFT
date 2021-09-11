@@ -5,20 +5,21 @@ import tensorflow as tf
 from tensorflow.keras.models import *
 from tensorflow.keras.layers import *
 print('Tensorflow version: {}'.format(tf.__version__))
-
+import h5py
+h5py.enable_ipython_completer()
 import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 
-import warnings
-warnings.filterwarnings('ignore')
+# import warnings
+# warnings.filterwarnings('ignore')
 
-batch_size = 32
-seq_len = 128
+batch_size = 64
+seq_len = 64
 
-d_k = 256
-d_v = 256
-n_heads = 12
-ff_dim = 256
+d_k = 128
+d_v = 128
+n_heads = 4
+ff_dim = 128
 
 IBM_path = r'C:\Users\soham\PycharmProjects\NEA\Data\Testing-Data.csv'
 
@@ -26,7 +27,7 @@ df = pd.read_csv(IBM_path, delimiter=',', usecols=['Date', 'Open', 'High', 'Low'
 
 # Replace 0 to avoid dividing by 0 later on
 df['Volume'].replace(to_replace=0, method='ffill', inplace=True)
-df.sort_values('Date', inplace=True)
+#df.sort_values('Date', inplace=True)
 print(df.tail())
 
 
@@ -40,7 +41,7 @@ ax1.set_xticks(range(0, df.shape[0], 1464))
 ax1.set_xticklabels(df['Date'].loc[::1464])
 ax1.set_ylabel('Close Price', fontsize=18)
 ax1.legend(loc="upper left", fontsize=12)
-#plt.show()
+plt.show()
 
 ax2 = fig.add_subplot(212)
 ax2.plot(df['Volume'], label='IBM Volume')
@@ -110,6 +111,40 @@ print('Test data shape: {}'.format(test_data.shape))
 df_train.head()
 
 
+fig = plt.figure(figsize=(15,12))
+st = fig.suptitle("Data Separation", fontsize=20)
+st.set_y(0.95)
+
+###############################################################################
+
+ax1 = fig.add_subplot(211)
+ax1.plot(np.arange(train_data.shape[0]), df_train['Close'], label='Training data')
+
+ax1.plot(np.arange(train_data.shape[0],
+                   train_data.shape[0]+val_data.shape[0]), df_val['Close'], label='Validation data')
+
+ax1.plot(np.arange(train_data.shape[0]+val_data.shape[0],
+                   train_data.shape[0]+val_data.shape[0]+test_data.shape[0]), df_test['Close'], label='Test data')
+ax1.set_xlabel('Date')
+ax1.set_ylabel('Normalized Closing Returns')
+ax1.set_title("Close Price", fontsize=18)
+ax1.legend(loc="best", fontsize=12)
+
+###############################################################################
+
+ax2 = fig.add_subplot(212)
+ax2.plot(np.arange(train_data.shape[0]), df_train['Volume'], label='Training data')
+
+ax2.plot(np.arange(train_data.shape[0],
+                   train_data.shape[0]+val_data.shape[0]), df_val['Volume'], label='Validation data')
+
+ax2.plot(np.arange(train_data.shape[0]+val_data.shape[0],
+                   train_data.shape[0]+val_data.shape[0]+test_data.shape[0]), df_test['Volume'], label='Test data')
+ax2.set_xlabel('Date')
+ax2.set_ylabel('Normalized Volume Changes')
+ax2.set_title("Volume", fontsize=18)
+ax2.legend(loc="best", fontsize=12)
+#plt.show()
 
 # Training data
 X_train, y_train = [], []
@@ -249,7 +284,7 @@ class MultiAttention(Layer):
 
 
 class TransformerEncoder(Layer):
-    def __init__(self, d_k, d_v, n_heads, ff_dim, dropout=0.1, **kwargs):
+    def __init__(self, d_k, d_v, n_heads, ff_dim, dropout=0.3, **kwargs):
         super(TransformerEncoder, self).__init__()
         self.d_k = d_k
         self.d_v = d_v
@@ -291,6 +326,7 @@ class TransformerEncoder(Layer):
         return config
 
 
+
 def create_model():
   '''Initialize time and transformer layers'''
   time_embedding = Time2Vector(seq_len)
@@ -312,31 +348,71 @@ def create_model():
   out = Dense(1, activation='linear')(x)
 
   model = Model(inputs=in_seq, outputs=out)
-  model.compile(loss='mse', optimizer='adam', metrics=['mae', 'mape'])
+  model.compile(loss='mse', optimizer='Adadelta', metrics=['mae','mape'])
   return model
 
 
 model = create_model()
 model.summary()
-
-callback = tf.keras.callbacks.ModelCheckpoint('Transformer+TimeEmbedding.hdf5',
-                                              monitor='val_loss',
-                                              save_best_only=True, verbose=1)
-
-history = model.fit(X_train, y_train,
-                    batch_size=batch_size,
-                    epochs=1,
-                    callbacks=[callback],
-                    validation_data=(X_val, y_val))
-
-model = tf.keras.models.load_model(r'C:\Users\soham\PycharmProjects\NEA\Data\Transformer+TimeEmbedding.hdf5',
-                                   custom_objects={'Time2Vector': Time2Vector,
-                                                   'SingleAttention': SingleAttention,
-                                                   'MultiAttention': MultiAttention,
-                                                   'TransformerEncoder': TransformerEncoder})
+####################################################
+# callback = tf.keras.callbacks.ModelCheckpoint(r'C:\Users\soham\PycharmProjects\NEA\Data\Transformer+TimeEmbedding.hdf5',
+#                                               monitor='mse',
+#                                               save_best_only=True, verbose=1)
+#
+# history = model.fit(X_train, y_train,
+#                     batch_size=batch_size,
+#                     epochs=2,
+#                     callbacks=[callback],
+#                     validation_data=(X_val, y_val))
+#
+# model = tf.keras.models.load_model(r'C:\Users\soham\PycharmProjects\NEA\Data\Transformer+TimeEmbedding.hdf5',
+#                                    custom_objects={'Time2Vector': Time2Vector,
+#                                                    'SingleAttention': SingleAttention,
+#                                                    'MultiAttention': MultiAttention,
+#                                                    'TransformerEncoder': TransformerEncoder})
 
 
 ###############################################################################
+
+checkpoint_path =r'C:\Users\soham\PycharmProjects\NEA\Data\training\cp.ckpt'
+checkpoint_dir = os.path.dirname(checkpoint_path)
+
+# Create a callback that saves the model's weights
+cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
+                                                 save_weights_only=True,
+                                                 verbose=1,
+                                                 monitor = 'val_loss'
+                                                 )
+
+# Train the model with the new callback
+model.fit(X_train, y_train,
+          epochs=10,
+          validation_data=(X_val, y_val),
+          callbacks=[cp_callback])  # Pass callback to training
+os.listdir(checkpoint_dir)
+
+# This may generate warnings related to saving the state of the optimizer.
+# These warnings (and similar warnings throughout this notebook)
+# are in place to discourage outdated usage, and can be ignored.
+
+# Loads the weights
+model.load_weights(checkpoint_path)
+# model = tf.keras.models.load_model(checkpoint_path,
+#                                    custom_objects={'Time2Vector': Time2Vector,
+#                                                    'SingleAttention': SingleAttention,
+#                                                    'MultiAttention': MultiAttention,
+#                                                    'TransformerEncoder': TransformerEncoder})
+# Re-evaluate the model
+# loss, acc = model.evaluate(test_images, test_labels, verbose=2)
+# print("Restored model, accuracy: {:5.2f}%".format(100 * acc))
+
+
+
+
+
+
+
+##########################
 '''Calculate predictions and metrics'''
 
 #Calculate predication for training, validation and test data
@@ -353,3 +429,49 @@ print('Evaluation metrics')
 print('Training Data - Loss: {:.4f}, MAE: {:.4f}, MAPE: {:.4f}'.format(train_eval[0], train_eval[1], train_eval[2]))
 print('Validation Data - Loss: {:.4f}, MAE: {:.4f}, MAPE: {:.4f}'.format(val_eval[0], val_eval[1], val_eval[2]))
 print('Test Data - Loss: {:.4f}, MAE: {:.4f}, MAPE: {:.4f}'.format(test_eval[0], test_eval[1], test_eval[2]))
+
+
+fig = plt.figure(figsize=(15,20))
+st = fig.suptitle("Transformer + TimeEmbedding Model", fontsize=22)
+st.set_y(0.92)
+
+
+
+#Plot training data results
+ax11 = fig.add_subplot(311)
+ax11.plot(train_data[:, 3], label='IBM Closing Returns')
+ax11.plot(np.arange(seq_len, train_pred.shape[0]+seq_len), train_pred, linewidth=3, label='Predicted IBM Closing Returns')
+ax11.set_title("Training Data", fontsize=18)
+ax11.set_xlabel('Date')
+ax11.set_ylabel('IBM Closing Returns')
+ax11.legend(loc="best", fontsize=12)
+
+#Plot validation data results
+ax21 = fig.add_subplot(312)
+ax21.plot(val_data[:, 3], label='IBM Closing Returns')
+ax21.plot(np.arange(seq_len, val_pred.shape[0]+seq_len), val_pred, linewidth=3, label='Predicted IBM Closing Returns')
+ax21.set_title("Validation Data", fontsize=18)
+ax21.set_xlabel('Date')
+ax21.set_ylabel('IBM Closing Returns')
+ax21.legend(loc="best", fontsize=12)
+
+#Plot test data results
+ax31 = fig.add_subplot(313)
+ax31.plot(test_data[:, 3], label='IBM Closing Returns')
+ax31.plot(np.arange(seq_len, test_pred.shape[0]+seq_len), test_pred, linewidth=3, label='Predicted IBM Closing Returns')
+ax31.set_title("Test Data", fontsize=18)
+ax31.set_xlabel('Date')
+ax31.set_ylabel('IBM Closing Returns')
+ax31.legend(loc="best", fontsize=12)
+
+
+#plt.show()
+
+
+tf.keras.utils.plot_model(
+    model,
+    to_file="IBM_Transformer+TimeEmbedding.png",
+    show_shapes=True,
+    show_layer_names=True,
+    expand_nested=True,
+    dpi=96,)

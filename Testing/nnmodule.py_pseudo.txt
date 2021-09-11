@@ -1,0 +1,216 @@
+IMPORT torch.nn as nn
+
+IMPORT torch.nn.functional as F
+
+
+
+DEFINE CLASS Model(nn.Module):
+
+    DEFINE FUNCTION __init__(self):
+
+        super(Model, self).__init__()
+
+        SET self.conv1 TO nn.Conv2d(1, 20, 5)
+
+        SET self.conv2 TO nn.Conv2d(20, 20, 5)
+
+
+
+    DEFINE FUNCTION forward(self, x):
+
+        SET x TO F.relu(self.conv1(x))
+
+        RETURN F.relu(self.conv2(x))
+
+
+
+SET x TO Model()
+
+OUTPUT(x)
+
+
+
+
+
+DEFINE CLASS Net(nn.Module):
+
+
+
+    DEFINE FUNCTION __init__(self):
+
+        super(Net, self).__init__()
+
+        # 1 INPUT image channel, 6 output channels, 5x5 square convolution kernel
+
+        SET self.conv1 TO nn.Conv2d(1, 6, 5)
+
+        SET self.conv2 TO nn.Conv2d(6, 16, 5)
+
+
+
+        SET # an affine operation: y TO Wx + b
+
+        SET self.fc1 TO nn.Linear(16 * 5 * 5, 120)
+
+        SET self.fc2 TO nn.Linear(120, 84)
+
+        SET self.fc3 TO nn.Linear(84, 10)
+
+
+
+    DEFINE FUNCTION forward(self, x):
+
+        # Max pooling over a (2, 2) window
+
+        SET x TO F.max_pool2d(F.relu(self.conv1(x)), (2, 2))
+
+
+
+        # 2 is ame as (2, 2)
+
+        SET x TO F.max_pool2d(F.relu(self.conv2(x)), 2)
+
+
+
+        SET x TO x.view(-1, self.num_flat_features(x))
+
+        SET x TO F.relu(self.fc1(x))
+
+        SET x TO F.relu(self.fc2(x))
+
+        SET x TO self.fc3(x)
+
+
+
+        RETURN x
+
+
+
+    DEFINE FUNCTION num_flat_features(self, x):
+
+        SET size TO x.size()[1:]  # all dimensions except the batch dimension
+
+        SET num_features TO 1
+
+        FOR s IN size:       # Get the products
+
+            num_features *= s
+
+        RETURN num_features
+
+
+
+
+
+SET net TO Net()
+
+OUTPUT(net)
+
+#################################################################
+
+
+
+IMPORT numpy as np
+
+IMPORT matplotlib.pyplot as plt
+
+
+
+DEFINE FUNCTION spiral_data(points, classes):
+
+    SET X TO np.zeros((points*classes, 2))
+
+    SET y TO np.zeros(points*classes, dtype='uint8')
+
+    FOR class_number IN range(classes):
+
+        SET ix TO range(points*class_number, points*(class_number+1))
+
+        SET r TO np.linspace(0.0, 1, points)  # radius
+
+        SET t TO np.linspace(class_number*4, (class_number+1)*4, points) + np.random.randn(points)*0.2
+
+        SET X[ix] TO np.c_[r*np.sin(t*2.5), r*np.cos(t*2.5)]
+
+        SET y[ix] TO class_number
+
+    RETURN X, y
+
+
+
+
+
+SET X, y TO spiral_data(100, 3)
+
+IMPORT math as m
+
+
+
+DEFINE CLASS Layer_Dense:
+
+    DEFINE FUNCTION __init__(self, n_INPUTs, n_neurons):
+
+        SET self.weights TO 0.10 * np.random.randn(n_INPUTs, n_neurons)
+
+        SET self.biases TO np.zeros((1, n_neurons))
+
+    DEFINE FUNCTION forward(self, INPUTs):
+
+        SET self.output TO np.dot(INPUTs, self.weights) + self.biases
+
+
+
+
+
+DEFINE CLASS Activation_ReLU:
+
+    DEFINE FUNCTION forward(self, INPUTs):
+
+        SET self.output TO np.maximum(0, INPUTs)
+
+
+
+DEFINE CLASS Activation_sgimoid:
+
+    DEFINE FUNCTION forward(self, INPUTs):
+
+        SET self.output TO np.exp()
+
+
+
+SET layer1 TO Layer_Dense(2,5)
+
+SET activation1 TO Activation_ReLU()
+
+SET layer2 TO Layer_Dense(2,5)
+
+SET activation2 TO Activation_sigmoid()
+
+layer1.forward(X)
+
+OUTPUT(layer1.forward(x))
+
+
+
+activation1.forward(layer1.output)
+
+OUTPUT(activation1.output)
+
+
+
+
+
+
+
+
+
+# plt.scatter(X[:, 0], X[:, 1], c=y, s=40, cmap=plt.cm.Spectral)
+
+# plt.show()
+
+# plt.plot(activation1.output)
+
+# plt.show()
+
+
+

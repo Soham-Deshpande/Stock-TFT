@@ -95,3 +95,24 @@ df.plot(x = "open",
         y= "close",
         kind = "line")
 plt.show()
+
+
+
+# importing packages
+import pandas as pd
+
+# dictionary of data
+dct = {"f1": range(6), "b1": range(6, 12)}
+
+# forming dataframe
+data = pd.DataFrame(dct)
+
+# using to_pickle function to form file
+# with name 'pickle_data'
+pd.to_pickle(data,'./pickle_data.pkl')
+
+# unpickled the data by using the
+# pd.read_pickle method
+unpickled_data = pd.read_pickle(r"C:\Users\soham\PycharmProjects\NEA\Data\NEAFTSE2010-21.csv")
+print(unpickled_data)
+

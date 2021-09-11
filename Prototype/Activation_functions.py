@@ -11,7 +11,7 @@ class Sigmoid:
         super().__init__()
 
     def sigmoid_func(self, x):
-        # print('The sigmoid derivative not working anymore also ~Soham')
+        # print('The sigmoid derivative not working anymore also ~Soham'), thank you michau
         return 1 / (1 + np.exp(-x))  # Calculates the sigmoid r
 
     def sigmoid_derivative(self, x):
