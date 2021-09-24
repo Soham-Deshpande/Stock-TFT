@@ -175,7 +175,7 @@ print('Training set shape', X_train.shape, y_train.shape)
 print('Validation set shape', X_val.shape, y_val.shape)
 print('Testing set shape' ,X_test.shape, y_test.shape)
 
-
+print("Test case:")
 class Time2Vector(Layer):
     def __init__(self, seq_len, **kwargs):
         super(Time2Vector, self).__init__()
