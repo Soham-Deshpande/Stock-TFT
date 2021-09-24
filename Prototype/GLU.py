@@ -9,18 +9,18 @@
 #
 # ----------------------------------------------------#
 from Activation_functions import Sigmoid
-
+from torch import nn
 
 class GLU():
-    def __init__(self):
+    def __init__(self, input_size):
         super().__init__()
 
-    def matrix_a(self):
-        pass
+        self.matrixa = nn.Linear(input_size,input_size) #setting up matrix A
+        self.matrixb = nn.Linear(input_size,input_size) #setting up matrix B
+        self.Sigmoid = Sigmoid()
 
-    def matrix_b(self):
+    def forward(self):
         pass
-
 
         
 
