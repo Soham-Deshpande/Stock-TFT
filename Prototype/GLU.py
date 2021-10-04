@@ -21,6 +21,7 @@ class GLU():
 
     def forward(self):
         pass
+    #finish this by 14th
 
         
 
