@@ -18,7 +18,7 @@ seq_len = 64
 
 d_k = 128
 d_v = 128
-n_heads = 4
+n_heads = 24
 ff_dim = 128
 
 IBM_path = r'C:\Users\soham\PycharmProjects\NEA\Data\Testing-Data.csv'

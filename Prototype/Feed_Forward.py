@@ -19,3 +19,4 @@ class Model:
 
     def backpropagation(self):
         pass
+    #finish by 25th see threats
