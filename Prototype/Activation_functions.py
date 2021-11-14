@@ -76,6 +76,7 @@ print(x.sinh_deriv(1))
 const = 1
 tanh = (x.sinh(const))/(x.sinh_deriv(const))
 print(tanh)
+
 #dont need cosh function as deriv of sinh is cosh
 # tanh can be worked out by doing sinh / d/dx{sinh}
 

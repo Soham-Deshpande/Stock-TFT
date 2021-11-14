@@ -14,5 +14,3 @@ class Softmax():
         div = np.sum(e_x, axis=1)
         div = div[:, np.newaxis] # dito
         return e_x / div
-
-#doesnt work, you have to do a step 2 question if you dont complete by november
