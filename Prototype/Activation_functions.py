@@ -16,7 +16,7 @@ class Sigmoid:
 
     def sigmoid_derivative(self, x):
         func_x = self.sigmoid_func(x)
-        func_x = self.sigmoid_func(x)
+
         return func_x * (1 - func_x)
 
     def sigmoid_second_derivative(self, x):
