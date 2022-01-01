@@ -1,4 +1,4 @@
-# NEA
+# Temporal Fusion Transformer - NEA
 
 A Technical Indicator for liquid asset evaluation using a Temporal Fusion Transformer
 
