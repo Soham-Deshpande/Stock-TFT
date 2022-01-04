@@ -1,7 +1,7 @@
 # Temporal Fusion Transformer - NEA
 <p align="center">
       <a href="https://www.python.org/">
-        <img src="https://img.shields.io/badge/Python-3.5-ff69b4.svg" /></a>
+        <img src="https://img.shields.io/badge/Python-3.8-ff69b4.svg" /></a>
        <a href= "https://pytorch.org/">
         <img src="https://img.shields.io/badge/PyTorch-1.3-2BAF2B.svg" /></a>
 
