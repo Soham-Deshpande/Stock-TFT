@@ -1,4 +1,13 @@
 # Temporal Fusion Transformer - NEA
+<p align="center">
+      <a href="https://www.python.org/">
+        <img src="https://img.shields.io/badge/Python-3.5-ff69b4.svg" /></a>
+       <a href= "https://pytorch.org/">
+        <img src="https://img.shields.io/badge/PyTorch-1.3-2BAF2B.svg" /></a>
+
+</p>
+
+
 [![made-with-latex](https://img.shields.io/badge/Made%20with-LaTeX-1f425f.svg)](https://www.latex-project.org/)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Soham-Deshpande/Stock-TFT/blob/master/LICENSE)
