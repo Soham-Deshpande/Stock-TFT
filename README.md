@@ -7,8 +7,6 @@
 
 </p>
 
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Soham-Deshpande/Stock-TFT/blob/master/LICENSE)
-
 A Technical Indicator for liquid asset evaluation using a Temporal Fusion Transformer
 
 The model I will be exploring is a transformer-based deep learning architecture that takes advantage of attention, more specifically multi-head attention in my implementation. 
