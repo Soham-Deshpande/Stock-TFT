@@ -1,6 +1,7 @@
 # Temporal Fusion Transformer - NEA
 [![made-with-latex](https://img.shields.io/badge/Made%20with-LaTeX-1f425f.svg)](https://www.latex-project.org/)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+
 A Technical Indicator for liquid asset evaluation using a Temporal Fusion Transformer
 
 The model I will be exploring is a transformer-based deep learning architecture that takes advantage of attention, more specifically multi-head attention in my implementation. 
