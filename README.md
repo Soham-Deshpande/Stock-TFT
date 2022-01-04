@@ -4,7 +4,7 @@
         <img src="https://img.shields.io/badge/Python-3.8-ff69b4.svg" /></a>
        <a href= "https://pytorch.org/">
         <img src="https://img.shields.io/badge/PyTorch-1.10-2BAF2B.svg" /></a>
-      <img src="https://img.shields.io/badge/stars-2-blue.svg"/>
+      <img src="https://img.shields.io/badge/license-MIT-blue.svg"/>
 
 </p>
 
