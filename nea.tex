@@ -1,0 +1,638 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{amsfonts}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{adjustbox}
+\usepackage{algopseudocode}
+\graphicspath{{/home/soham/Desktop/NEAlatex/images/}}
+
+\title{Deep Stock Prediction}
+
+\author{Soham Deshpande}
+\date{December 2021}
+
+\begin{document}
+
+\maketitle
+\subsection*{A Technical Indicator for  liquid asset evaluation using machine learning techniques }
+\clearpage
+\section{Contents}
+\clearpage
+
+\section {Introduction to the Stock Market}
+\subsection{Abstract}
+\normalsize{In recent years the fast-growing financial markets opened new horizons for investors and at the same time brought new challenges for financial analysts in their efforts to make effective decisions and reduce investment risks.
+The stock market is a highly dynamic and complex system where factors affecting the price are not limited to the economic world, rather in recent years the political climate and social media playing a bigger role. This has resulted in a highly stochastic, chaotic market. As with the other industries, the amount of data being created every day can be overwhelming and often hard to understand and decipher for someone with limited experience. This problem can be seen as one for computer science and mathematics.
+In the past decades, effective prediction models, both linear and machine learning tools have been explored. In recent years the research into deep learning has rapidly accelerated the progress made in prediction software. The motivation behind this paper is to describe and show an implementation of a deep learning model to help predict the price of stocks.
+\\
+Keywords:
+Stock market prediction, deep learning, transformers, attention, feedforward neural network, temporal fusion transformers
+}
+
+\section{Introduction}
+The model I will be exploring is a transformer-based deep learning architecture that takes advantage of attention, more specifically multi-head attention in my implementation.
+Many models use ARIMA(Auto-Regressive Integrated Moving Average) but I am proposing using transformers with multi-head attention, something that I will talk about later on, to help the model ‘learn’ about the stock rather than just trying to fit a curve on it based on the last few data points. The benefits of learning allow the model to consider previous experience instead of just looking at a few, previous data points. This technique will hopefully result in a higher accuracy compared to ARIMA. Other implementations have managed an accuracy of 94\%(Zolkepli and Divino, n.d.) so I will be aiming to stay within 5\%. The reduced target comes down to a few factors such as limited access hardware, not enough time to optimise my program for the hardware as well as a few other factors.
+
+
+
+\section{Analysis}
+\subsection{Stock prediction techniques}
+Stock prediction is a problem that requires time series analysis. Time series analysis is the technique of analysing sequential data.
+In the current market, a couple of techniques are used to analyse and predict the price. In this section, I will discuss a few multivariate time series models.
+
+\subsection{ARIMA}
+Autoregressive integrated moving average is a common method used to perform time series analysis.
+(Hyndman and Athanasopoulos, 2018)
+In a regression model, we forecast the variable of interest using a linear combination of predictors. Autoregression focuses on using a linear combination of past values and the variable itself to predict the variable of interest. The term autoregression indicates that it is a regression of the variable against itself.
+
+\begin{equation}
+    y_t = c + \phi_1 y_{t-1} + \phi_2 {t-2} + ... + \phi_p y_{t-p} + \epsilon_t
+\end{equation}
+
+These models are very good at handling different time series patterns. Changing the parameters, $\phi$ result in different patterns. $\epsilon$ is the error term; changing this will change the scale of the series. This model is very effective when it comes to stock prediction and so will therefore provide a baseline when it comes to the accuracy of the model.
+\begin{figure}[h!]
+    %\centering
+  \includegraphics[width=100mm]{arima1}
+    \caption{Plotting the data }
+\end{figure}
+The image above shows an implementation of auto regression on FTSE 100 data from 2010 to 2020. Green dots represent the predicted values while the red dots represent the actual values.
+\begin{wrapfigure}
+    \centering
+    \includegraphics[width=\textwidth]{arima2}
+    \caption{Using ARIMA on test data }
+\end{wrapfigure}
+Figure 3 shows the accuracy of the model at a respectable 89.21\% when using MSE as the loss function.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[max size={\textwidth\textheight}]{arima3}
+    \caption{MSE Loss using ARIMA }
+\end{figure}
+
+\subsection{Neural Networks}
+The research done in the 1990s have helped set up the foundations for a mathematical model that is today known as machine learning. This mathematical process aims to replicate the brain through the use of several functions and calculus. This replication comes in the form of neurons in a neural network. In the following paragraphs I will proceed to explain a type of neural network known as a ‘Convoluted neural network’ before proceeding to describe an evolution, the ‘Recurrent neural network’.
+
+
+\subsection{CNN}
+The neural network is heavily dependent on the maths surrounding gradients, in particular differentiation. The main components of a neural network include: an activation function, layers, a loss function and an optimiser.
+\\
+Similar to the human brain, a neural network is made up of many neurons. These neurons are information processing units that are fundamental to the operation of a neural network. The structure of a neuron is shown in figure 2.2.3 and is represented by a subscript k.  A basic neural network consists of 3 main parts: a set of connecting links between neurons, an adder and an activation function.
+\\
+The set of links each have a weight assigned to them. They work by taking input signals, often as vectors, and then multiply these by the weights they are assigned. This process is shown in figure 2.2.3. After that each vector is added together before a fixed bias is applied. To simulate the process of a neuron turning on and off, an activation function is used. These are mathematical functions and are described in the following paragraphs.
+
+\subsection{Activation Functions}
+To summarise the behaviour of an activation function, it can be compared to a transistor; it only activates at a certain threshold.  These try to replicate how the neurons behave in our brain.
+The most common activation functions are shown below along with their equation.
+
+\begin{itemize}
+    \item Binary step function
+    \begin{itemize}
+        \item \begin{align*}
+            u(x) = 	1 \mbox{ if }  x \geq 0 \mbox{ or } 0 \mbox{ if } x <  0
+        \end{align*}
+
+
+     \begin{align*}
+            Y = u(x-3)
+        \end{align*}
+        \begin{figure}[h!]
+            \centering
+            \includegraphics{binarystep}
+            \caption{Binary step function}
+        \end{figure}
+    \end{itemize}
+
+
+    \item Linear Function
+        \begin{itemize}
+            \item \begin{equation*}
+            f(x) = mx
+        \end{equation*}
+        \end{itemize}
+
+
+    \item Sigmoid
+        \begin{itemize}
+            \item
+        %Values range from 0 to 1\\
+        %\begin{align*}
+            $$\sigma(x)  =\:\frac{1}{\:1+e^{-x}}$$
+            $$\frac{d}{dx} =$$
+            $$f  = 1 \quad f' = 0$$
+            $$g  = 1 + e^{-x} \quad g' = -e^{-x}$$
+            Using the quotient rule:
+            $$= \frac{e^{-x}}{{(1+e^{-x})}^2}$$
+        %\end{align*}
+            This can also be written as:
+            $$\sigma'(x) = \sigma(x)(1-\sigma(x))$$
+
+        \end{itemize}
+
+
+    \item Tanh
+        \begin{itemize}
+        \item $tanh(x) = 2\sigma(2x)-1$
+        \itme Values range from -1 to 1
+        \end{itemize}
+        \begin{figure}[h!]
+            \centering
+            \includegraphics{tanh}
+            \caption{Tanh function}
+        \end{figure}
+
+
+    \item ReLU(Rectified Linear Unit)
+        \begin{itemize}
+            \item Neurons will only deactivate if the output of the linear transformations less that 0\\
+            Also a leaky version of ReLU present
+        \end{itemize}
+        \begin{figure}[h!]
+            \centering
+            \includegraphics{relu}
+            \caption{ReLU function}
+        \end{figure}
+
+    \item Softmax
+        \begin{itemize}
+            \item Returns the probability for a data point belonging to each individual class
+            $$\sigma(\hat{z})_i = \frac{e^{zi}}{\sum_{j=1}^{k}e^{z_j}}$$
+            Below is a description of the softmax function: (Versloot, 2020)\\
+
+This can be described as the following: for each value in our input vector, the Softmax value is the exponent of the individual input divided by a sum of the exponents of all the inputs.
+\\
+This ensures that multiple things happen:
+\\
+Negative inputs will be converted into nonnegative values, thanks to the exponential function.\\
+Each input will be in the interval (0,1)
+As the denominator in each Softmax computation is the same, the values become proportional to each other, which makes sure that together they sum to 1.\\
+\\
+These properties allow us to interpret them as probabilities.
+\\
+To make sure these values are actually valid probabilities, it can be checked against Kolomogorov’s probability axioms.
+\begin{itemize}
+    \item Each probability must be a nonzero real number. This is true for our outcomes: each is real-valued, and nonzero.
+    \item The sum of probabilities must be 1. This is also true for our outcomes: the sum of cutoff values is$\approx$ 1, due to the nature of real-valued numbers. The true sum is 1.
+\end{itemize}
+Here is an example of the function
+\begin{figure}[h!]
+            \centering
+            \includegraphics{softmax}
+            \caption{Where a = 6.638 and b = 4.71}
+        \end{figure}
+        \end{itemize}
+        In the equation above, $\hat{z}$ is the input vector to the softmax function, made up of ($z_0, ... z_k$)\\
+        $z_i$ are All the $Z_i$ values are the elements of the input vector to the softmax function, and they can take any real value, positive, zero or negative. For example a neural network could have output a vector such as (-0.62, 8.12, 2.53), which is not a valid probability distribution, hence why the softmax would be necessary.\\
+        $e^{z_ii}$ is the  standard exponential function is applied to each element of the input vector. This gives a positive value above 0, which will be very small if the input was negative, and very large if the input was large. However, it is still not fixed in the range (0, 1) which is what is required of a probability.\\
+$\sum_{j=1}^{k}{e^{z_j}}$ is the term on the bottom of the formula is the normalization term. It ensures that all the output values of the function will sum to 1 and each be in the range (0, 1), thus constituting a valid probability distribution.\\
+        $k$ is the number of classes in the multi-class classifier.
+\end{itemize}
+\item ELU(Exponential linear unit)\\
+The exponential linear unit was designed to fix some of the problems with ReLUs. This function has a parameter that is picked; a common value is between 0.1 and 0.3.
+\begin{equation*}
+            ELU(x) = 	x \mbox{ if }  x > 0 \mbox{ or } \alpha(e^{x}-1)  \mbox{ if } x <  0
+        \end{equation*}
+This  equation tells us that if the input, x, is greater than 0 then the output is the same as a RELU, y=x. If the input drops below 0, the value becomes slightly smaller than 0. This value will be modelled using (ex-1)where we choose a value for . The exponential operation makes this function more computationally expensive than a vanilla ReLU. The exponential function helps fix the vanishing gradient problem often associated with ReLUs. An advantage is that the ELU produces negative values which allows them to push mean unit activation close to zero, a bit like batch normalisation but with lower computational complexity. Mean shifts towards zero help speed up learning.
+\begin{figure}[h!]
+            \centering
+            \includegraphics{elu1}
+            \caption{ELU function}
+        \end{figure}
+The derivative can be written as\\
+\begin{equation*}
+            ELU'(x) = 	1 \mbox{ if }  x > 0 \mbox{ or } \alpha(e^{x})  \mbox{ if } x <  0
+        \end{equation*}
+The exponential function helps make this function differentiable at all points.  Below is the graph for the derivative:
+\begin{figure}[h!]
+            \centering
+            \includegraphics{eluderiv}
+            \caption{ELU derivative function}
+        \end{figure}
+
+\end{itemize}
+
+\subsection{Layers}
+
+As shown in the figure below, in between the input and output layers there are hidden layers.  These layers contain many neurons. The equation that is used to model these neurons is shown in the second image, I have used the sigmoid function as an example of the calculation that may happen at a neuron. The summation of the weights multiplied by the input activity. A bias is then applied before the activation function, a sigmoid in my example, is applied to the result to determine whether the neuron should turn on or not.
+\begin{figure*}[h!]
+            \centering
+            \includegraphics{layers1.jpg}
+            \caption{Layers shown in a neural network}
+        \end{figure*}
+\begin{figure}[h!]
+            \centering
+            \includegraphics{layers2.jpg}
+            \caption{Neuron represented mathematically}
+        \end{figure}
+
+\subsection{Neurons and Equations}
+The neurons can be modelled using the equations given below in the equation $$a = \sigma(w \times a + b)$$
+Here $a$ is the activity, the activity of the neuron, $\sigma$ is the activation function, $w$ is the weight and $b$ is the bias.
+The equation shows that the activity is modelled by multiplying the previous activity by a weight that is changed during the whole learning process, before a constant bias is applied. The equation below shows a more general equation where the letter L represents a neuron in current time and so L-1 is the activity of the previous neuron.
+$$a^{L} = \sigma(w^{L}\times a^{L-1} + b^{L})$$
+Another way to write this is:\\
+$$\sigma((\sum_{j=0}^{n}w_j\cdot a_j)+b)$$
+
+\subsection{Loss Functions}
+
+A loss function is what ultimately gives the neural network its intelligence. At its core it’s a method evaluating how well the algorithm models the data. If the predictions are off by a high margin then a high loss will be calculated. If the margin of error is lower, a lower number will be calculated showing that your predictions are quite close. This loss is also commonly referred to as the accuracy. The goal is to get your loss as low as possible or can be referred to as achieving a high accuracy.  There are many functions that can be used to determine the loss but the most common are root mean squared error, absolute error loss and binary cross entropy loss. Lots of neural networks have custom loss functions that are dependent on the purpose they are serving. A very strict loss function that amplifies the loss is more typical in places where the loss must be kept at a minimum such as stock prediction.
+
+\subsection{Feed Forward and Back propagation}
+For the neural network to truly learn, it must go through a process called back propagation. This is an algorithm that is used in supervised learning and uses a concept called gradient descent.
+One way to think about a loss function is to imagine it being a black box that works out an equation, say y =  to get you from the domain to the range. Now this equation can be plotted, figure 2 and we can see that there are a few things to observe about this graph. Calculus tells us that the turning points happen when the gradient of a curve, that can be worked out using differentiation, is 0. The second step is to work out the second derivative and that will  tell us whether the point is a maxima or minima. Where $\frac{d^{2}y}{dx^{2}} > 0$, the point can be described as a minimum and when $\frac{d^{2}y}{dx^{2}} < 0$, the point can be described as a maximum. The minimum point that occurs when $\frac{dy}{dx}$ (the gradient)is 0, on the graph below it happens at the point (3,0).
+
+\begin{figure}[h!]
+            \centering
+            \includegraphics{ff1.jpg}
+            \caption{}
+        \end{figure}
+Consider $w$ to be one of the weights discussed in the previous section.\\
+If $w<3$, we have a positive loss function, but the derivative is negative, meaning that an increase of weight will decrease the loss function.\\
+At $w=3$, the loss is 0 and the derivative is 0, we reached a perfect model, nothing is needed.\\
+If $w>3$, the loss becomes positive again, but the derivative is as well positive, meaning that any more increase in the weight, will increase the losses even more.\\
+To try and decrease this loss, at $w<3$ you should increase the weight and at $w>3$ you should decrease the weight.\\
+\\
+The equation for working out the new weight is shown below where $w_n$ is the weight, $C$ is the cost function and $\alpha$ is the learning rate(which is a constant). \\
+
+$$new\hspace{3}w_n = (old\hspace{3} w_n) - \alpha \cdot \frac{\partial C}{\partial w_n}$$
+%error above, not too sure why
+
+\subsection{Backpropagation}
+The goal of backpropagation is to minimise the error function by changing the weights of the individual neurons. The formulation of the complete backpropagation algorithm can be proven by induction to show that it works with differentiable activation functions at its nodes.
+\\
+For this proof, the assumption has been made that the neural network is one with a single input and single output. To simplify the proof, instead of carrying a bias term, let us assume that each layer $V^{(t)}$ contains a single neuron $v_o^{(t)}$ that always outputs a constant 1 thus the output of a neuron is given by $$\sigma(\sumw_{i,j}v_j^{t-1})$$ We next wish to compute the derivative $\nabla f_w$. Now suppose neuron $v_i^{t}$ computes:
+$$v_i^t(x) = \sigma(u_i^t(x))$$
+Then using the chain rule we can obtain that\\
+$$\frac{\partial f}{\partial w_{i,j}} = \frac{\partial f}{\partial u_i^t}\cdot \frac{\partial u_i^t}{\partial f} = \frac{\partial f}{\partial u_i^t}v_i^{(t-1)}(x)$$\\
+
+Thus to compute the partial derivative of a single weight, it is enough to compute $\frac{\partial f}{\partial u_i^t}$.
+We can now focus on computing $\frac{f}{\partial u_i^t}$. Now suppose f is a function of $u_1^t, \cdots, u_m^t$, which we are in turn function of some variable $z$ then we have by chain rule:
+$$\frac{\partial f}{\partial z} = \sum_{i=1}^{m}\frac{f}{\partial u_i^t}\cdot \frac{\partial u_i^t}{\partial z}$$
+Now if $z = u_n^{t-1}$ is the output of some neuron in a previous layer: The calculation of $\frac{u_i^t}{\partial u_n^{t-1}}$ is easy for our choice of activation function
+$$u_i^t = \sum w_{i,j}\sigma(u_j^{t-1}) \rightarrow \frac{u_i^t}{u_n^{t-1}} = w_{i,n}\sigma'(u_n^(t-1))$$
+Using this equation for $f= u_i^t$ we can recursively calculate all the partial derivatives. This inductive approach can be used to calculate all the dervatives, giving us the backpropagation algorithm. In reality the algorithm calculates the derivatives through dynamic programming therefore reducing the complexity.\\
+To summarise the process consider an input-output pair, (x,y). Use the current set of weights at
+t=0 in the network to generate the output vector $g(x)$, whose individual values comprise of the $a_N$
+values for each neuron in the output layer. Next compute the derivatives for each neuron in the
+output layer and use those values to update the weights ,$w$, on the incoming edges on the graph
+for those neurons using the update rule. Next, for the neurons in the last hidden layer, the layer
+before the output layer, compute the derivatives then use them to update the incoming edges for
+those neurons. Repeat this process for each neuron in the network. Eventually you will reach the
+input layer where there are no incoming edges and hence no weights to update.
+This process should be done for each input-output pair in the training data.\\
+In testing a standard Seq-Seq CNN displayed an accuracy of 90.7\%.(Zolkepli and Divino, n.d.).
+This is slightly higher than the ARIMA model but is still not satisfactory for use in the stock
+market.
+\subsection{RNN}
+The traditional CNN started to become of great interest in the 2000s and started to evolve to fit
+many purposes. One such evolution is into the recurrent neural network.\\
+Recurrent neural networks were created because there were a few issues with the standard feed
+forward CNN. The issues came about as the input started to change from just being a few
+numbers to images represented as a matrix. The main issues were that it couldn’t handle
+sequential data, only considered the current input and that it couldn't memorise previous inputs
+An RNN works on the principle of saving the output of a particular layer and then feeding this
+back to the input in order to predict the output of the layer. This gives them the ability to
+remember their last input.\\
+\begin{figure}[h!]
+    \centering
+    \includegraphics{rnn1.jpg}
+    \caption{RNN visualised }
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics{rnn2.jpg}
+    \caption{RNN broken down into individual components }
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics{rnn3.jpg}
+    \caption{}
+\end{figure}
+\subsubsection{Problems with RNN}
+The RNN has two big problems: a vanishing gradient problem and an exploding gradient
+problem.\\
+As previously mentioned, the gradient descent algorithm finds the minimum of a function to
+find the optimal weights.\\
+In RNNs, information first travels through time which means that information from previous
+time points is used as the input for the next time points. Secondly the cost/error function is
+calculated at each time point.\\
+Essentially, every single neuron that participated in the calculation of the output, associated with
+this cost function, should have its weight updated in order to minimize that error. And the thing
+with RNNs is that it’s not just the neurons directly below this output layer that contributed but
+all of the neurons far back in time. So, you have to propagate all the way back through time to
+these neurons.\\
+The problem relates to updating wrec (weight recurring) – the weight that is used to connect the
+hidden layers to themselves in the unrolled temporal loop.\
+For instance, to get from xt-3 to xt-2 we multiply xt-3 by wrec. Then, to get from xt-2 to xt-1 we
+again multiply xt-2 by wrec. So, we multiply with the same exact weight multiple times, and this
+is where the problem arises: when you multiply something by a small number, your value
+decreases very quickly.\\
+As we know, weights are assigned at the start of the neural network with the random values,
+which are close to zero, and from there the network trains them up. But, when you start with
+wrec close to zero and multiply xt, xt-1, xt-2, xt-3, … by this value, your gradient becomes less
+and less with each multiplication.\\
+(Biswal, 2021)
+
+\subsection{LSTM}
+All RNNs have feedback loops to help them maintain the information in the memory while
+training but to resolve the problems mentioned above, the LSTM was created.
+Long-short term memory networks are a type of RNN that introduces the use of gates such as
+input and forget gates which allow for better control ive the gradient flow hence allowing a
+better preservation of long-range dependencies. These gates use functions that we have
+mentioned before such as the tanh function, and the sigmoid function.
+\begin{figure}[h!]
+    \centering
+    \includegraphics{lstm1.jpg}
+    \caption{}
+\end{figure}
+(Olah,2015)
+The LSTM has a block called the cell state, the middle block in the diagram above. The network
+has the ability to remove or add information to the cell state so that it can be accessed at a later
+time. This cell state is protected by the mathematical functions so that it doesn’t get cluttered
+with useless information
+\subsubsection{Problems with LSTM}
+As you can see from the image above, there is a sequential path from the oldest past cells to the
+current ones. This sequential path is now more complex with the addition of forget gates. This
+makes them very resource intensive and so requires an immense amount of memory. This makes
+them very inefficient and so unsuitable for small devices such as home devices like Amazon
+Echo or Apple home pods.\\
+LSTMs also get affected by different random weight initialisations and hence act just like a nomla
+feed forward neural network with extra steps making them nearly useless. They much prefer
+small weight initialisations.\\
+Along with these problems, LSTMs are prone to overfitting and are difficult to apply dropout
+algorithms to resolve this issue. To add to this list is the fact that LSTMs struggle to retain
+information when handling larger datasets. They can handle sequences of 100s but not 1000s or above. This makes them unsuitable for tasks like stock prediction or neural language processing.
+
+\subsection{Transformers}
+The Transformer is an evolution of the RNN and its main purpose was to solve the problem of
+parallelisation. It only performs a small, constant number of steps. In each step it applies a
+self-attention mechanism that helps it retain information for longer making it more suitable for
+larger datasets. This model is typically used for neural language processing where keeping a
+track of all the words used helps the machine to gain understanding about the context. A
+common neural network would typically contain an encoder that would read the input sentence
+and would generate a representation of it. A decoder would then generate the output sentence
+while looking back to the representation the encoder created. The Transformer takes a different
+approach; it starts by generating initial representations/embeddings for each word. A self
+attention mechanism is then applied to the representation which generates a new representation
+for the word by comparing it to previous words. This step of making a new representation is
+repeated multiple times in parallel for all the words in the input sentence.\\
+This parallelisation increases its computational performance and produces a high accuracy.
+\begin{figure}[h!]
+    \centering
+    \includegraphics{transformer1.jpg}
+    \caption{}
+(Vaswani et al., 2017)
+
+\subsection{Attention}
+(Lambda, 2019)
+A critical and apparent disadvantage of this fixed-length context vector design is the incapability
+of the system to remember longer sequences. Often it has forgotten the earlier parts of the
+sequence once it has processed the entire sequence. The attention mechanism was born to resolve
+this problem.\\
+A neural network is considered to be an effort to mimic the brain in a simplified manner. The
+attention mechanism can be described as an attempt to mimic the action of selectively
+concentrating on a few relevant things instead of everything. There are two types of attention:
+general attention and self-attention. General attention is between the input and output elements
+and self-attention is within the input elements\\
+The central idea behind attention is not to throw away any intermediate encoder states in LSTMs
+and Transformers. Instead these states are used to construct the context vectors required by the
+decoder to generate the output sequence.\\
+A look into how self attention is calculated using vectors.\\
+The first step in calculating self-attention is to create 3 vectors from each of the encoder’s input
+vector, a query \boldsymbol{q}, a key \boldsymbol{k} and a value \boldsymbol{v}.\\
+The second step is to calculate a score. The score determines how much focus to place on other
+parts of the input as the input is encoded at a certain position.\\
+The score is calculated by taking the dot product of the query vector with the key vector of the
+respective value we are scoring. So if we are processing the self attention for the value in position
+1 then the first score would be the dot product of $q_1$ and $k_1$. The second score would be the dot
+product of $q_1$ and $k_2$.\\
+The third step is to divide the scores by the square root of the dimension of the key vectors used.
+This leads to having a more stable gradient.\\
+This value will then be passed through the softmax function. This helps normalise the scores so
+that they are all positive and add up to 1.\\
+The fifth step is to multiply each value vector by the softmax score (in preparation to sum them
+up). The intuition here is to keep intact the values of the word(s) we want to focus on, and
+drown-out outliers (by multiplying them by tiny numbers like 0.001, for example).
+The sixth step is to sum up the weighted value vectors. This produces the output of the
+self-attention layer at this position for the first value.
+
+\subsection{Temporal Fusion Transformers}
+(Lim, 2020)
+Attention is very useful for natural language processing but when handling time series data,
+modifications have to be made. The temporal fusion transformer is the evolution made for this
+type of data.
+\begin{figure}[h!]
+    \centering
+    \includegraphics{tft1.jpg}
+    \caption{Temporal Fusion Transformer broken down into its components}
+\end{figure}
+The TFT has 5 main parts that get you from a dataset to a prediction. These allow the TFT to
+efficiently predict future data points with a high performance.
+\begin{enumerate}
+\item Variable selection networks are used to select relevant input variables at each time step.
+\item The gating mechanism to skip over any unused blocks and components of the architecture to allow for a dynamic model that adjusts itself to account for the dataset hence making it more time and memory efficient. This helps accommodate for larger datasets as well making the model more versatile.
+\item The static covariate encoders are used to integrate start features into the network by encoding context vectors to condition temporal dynamics.
+\item Temporal processing is used to learn both short and long term relationships between past and current inputs. Here a sequence to sequence layer with a multi-head attention block.
+\item Prediction intervals via the forecasts to calculate the range of likely values at each step.
+\end{enumerate}
+
+\subsection{Tensors}
+An $n$th-rank tensor in $m$ dimensional space is a mathematical object that has $n$ indicies and $m^n$ components that obeys certain transformation rules
+
+\subsubsection{Tensor Product}
+For any two vector spaces $\vec{U}$,$\vec{V}$ over the same field $F$, we can construct a tensor product $\vec{U}\otimes\vec{V}$ which is also an F-vector space.\\
+Example:
+$$\vec{v}=\begin{pmatrix}1\\ 2\\ 3\end{pmatrix}\quad \vec{w}=\begin{pmatrix}4\\ 5\end{pmatrix}$$
+V is a vector in $\mathbb{R}^{2}$. W is a vector in $\mathbb{R}^{3}$.
+$$\vec{v}\otimes\vec{v} \rightarrow \begin{pmatrix}1\cdot 4\\ 1\cdot \:5\\ 2\cdot \:4\\ 2\cdot \:5\\ 3\cdot \:4\\ 3\cdot \:5\end{pmatrix}=\begin{pmatrix}4\\ 5\\ 8\\ 10\\ 12\\ 15\end{pmatrix}$$
+
+\subsection{Gated Linear Units(GLU)}
+GLUs can be defined by the following equation:
+$$h(x)=(x\cdot W +b)\otimes \sigma(X\cdot V+c)$$
+Given a tensor, two independent convolutions are done and we get two outputs. We further do an additional sigmoid activation for one for the output, and find the tensor product of the two outputs.
+
+
+\subsection{Gated Residual Network(GRN)}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.25\textwidth]{grn.png}
+    \caption{GRN visualised}
+\end{figure}
+
+The gated residual network, as shown in the image above,  consists of a dense block with an exponential linear unit as the activation function. This is then fed into another dense block before a GLU and normalised. There will be a connection between the input and output to allow for the attention mechanism to work. In my model, there will not be external context. The GRN can be modelled using the equations below:
+$$GRN(\alpha) = LayerNorm(\alpha + GLU(\phi_1)) $$
+$$\phi_1 = W_1, \phi_2+b_1$$
+$$\phi_2 = ELU(W_2, \alpha + W_3) $$
+$$\phi_1,\phi_2\in R $$
+
+\subsection{Variable Selection Network}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.25\textwidth]{vsn.png}}
+    \caption{Variable Selection Network visualised}
+\end{figure}
+
+The purpose of the variable selection network is to evaluate the relevance of the variables than can be fed back into the model. This helps tell us what variables are the most significant as well as removing any unnecessary, noisy inputs that could negatively impact the performance of the model. This is useful when dealing with real time data as there might not be enough time to make sure all the data is correct or useful. As shown in the image above, there will be three GRNs with one of them having a softmax as the activation function. The tensor product will then be calculated.
+
+\subsection{Multi-head attention}
+The TFT model uses a self-attention mechanism to learn long term relationships between the data points across the different time steps. The concept of attention has already been explained and how that is calculated has also been discussed. To fit the TFT, a few modifications have been made. The general self-attention relies on the head value being the same but in our case this is different. This means the attention mechanism would have to only rely on the attention weights which is not enough. This problem has been solved by modifying the multi-head attention to share values in each head and using additive aggregation of all the heads.
+
+$$MultiHead(\vec{Q},\vec{K},\vec{V}) = [\vec{H_1},...,\vec{H_h}]\cdot\vec{W_h} $$
+$$ \vec{H_h}= Attention(\vec{Q}\vec{W_Q},\vec{K}\vec{W_K},\vec{V}\vec{W_V})$$
+$$InterpretableMultiHead(\vec{Q},\vec{K},\vec{V})=\vec{\tilde{H}}\cdot\vec{W_H}$$
+$$ \vec{\tilde{H}}=\tilde{A}(\vec{Q},\vec{K]})\cdot\vec{V}\vec{W_V}$$
+$$=\frac{1}{H}\sum _{h=1}^{M_h}Attention(\vec{Q}\vec{W_Q},\vec{K}\vec{W_K},\vec{V}\vec{W_V})$$
+The first equation shows what the equation would be when multiple heads are added. Q,K and V are the query vectors, key vectors and value vectors. Wv are the value weights shared across all the heads.
+The interpretable multi-head function is our modified equation. The last equation shows us how we have employed additive aggregation.
+
+\subsection{Quantile Forecasts}
+The TFT can generate prediction intervals as well as point forecasts. This is done by predicting various percentiles (10\%, 50\%, 90\%) at each time step. The quantile forecast is calculated using the outputs of the temporal fusion decoder as is written as this:
+$$\tilde{\xi} = GRN(\xi)$$
+$$\phi(t,n)=LayerNorm(\tilde{\xi}+ GLU(\phi(t,n)))$$
+$$\ps(t,n)= LayerNorm(\phi(t,n)+GLU(\psi(t,n)))$$
+$$\hat{y}(q,t,n)=\vec{W_q}\psi(t,n)+b_q$$
+The equations above shows us what is being calculated to end up with the last equation which is our quantile forecast.
+
+
+\subsection{Software}
+
+\subsubsection{Coding Language}
+I have chosen to use python to code my project due to a few reasons. The first reason is the flexibility of the language. I have the option to use OOP and functional programming as well as not having to recompile the code every time I want to run the code. Python can also be combined with other languages such as C which makes it more powerful when dealing with a lot of maths.
+Another reason is that Python has a very big library for machine learning. This makes prototyping and implementing my own algorithm a lot easier as well as being able to visualise my code a lot easier with packages such as pyplot.
+My other option was C/C++ where I would’ve had benefits such as more compact and faster runtime. Python does offer extensions or libraries that optimise the Python code. An example is Theano. Unlike C++ where specific optimisations need to be made, Python can run nearly any system without any time being wasted on specific configurations. Python also has access to libraries such as CUDA python. Libraries like that are made to help with parallelisation on GPUs. This exploits the tensor cores that are offered by the hardware manufacturers. The power to be able offload tasks to the GPU makes any performance advantage C++ had, instantly insignificant.
+GIE is the NVIDIA GPU inference engine.
+\begin{wrapfigure}{l}{0.25\textwidth}
+    \centering
+    \includegraphics[width=0.25\textwidth]{codinglan1.png}
+\end{wrapfigure}
+\begin{wrapfigure}{l}{0.25\textwidth}
+    \centering
+    \includegraphics[width=0.25\textwidth]{codinglan2.png}
+\end{wrapfigure}
+The graph shows the advantage GPUs provide for training deep learning models.
+
+\subsubsection{Packages}
+For my project I have considered using packages to aid the learning process such as Theano. Theano is a CPU and GPU mathematical compiler that outperforms other tools. Theano includes tools for manipulating and optimising graphs representing mathematical functions. An example is the sigmoid function that is used heavily in machine learning. Theano’s optimisation also includes the elimination of duplicates or unnecessary computations therefore increasing the numerical stability as well as increasing speed.  The graph representation allows the user to quickly prototype machine learning models as the differentiation of the function does not have to be calculated in algorithms such as backpropagation. This reduces the amount of code that has to be executed. Theano also uses CUDA to define a class of n-dimensional arrays located in GPU memory with Python bindings. This speeds up the number of operations that are performed per second. Theano can also leverage multi-core CPU architectures to allow for parallelisation on both the CPU and the GPU. Some disadvantages of using Theano include the speed of compiling is a lot larger with bigger models. The error messages are also difficult to understand which will make debugging harder. Theano is a quite low level so the learning curve is steeper.
+Another package that I could use is Tensorflow. Tensorflow has a flexible architecture and can be deployed on more than one GPU or CPU. As well as this it shares all the features that Theano has. The reason I am not using it is because it is very high level and does not give you enough control at the base layer.
+
+\subsection{Objectives}
+The aim of this project is to be able to make predictions on the price of a stock given historic data of the stock.
+\\
+\subsubsection{General Objectives}
+\\
+Data processing
+\begin{enumerate}
+    \item Must be able to accept a CSV file as an input
+    \item Must normalise the data set
+\end{enumerate}
+
+Prediction
+\begin{enumerate}
+    \item Must pass the data through a variable selection block
+    \item Must pass the data through an LSTM encoder
+    \item Must pass the data through a series of GRNs
+    \item Must implement multi head attention
+    \item Must return quantile forecasts for the following 5 days
+\end{enumerate}
+
+Forecast processing
+\begin{enumerate}
+    \item Must decide whether to recommend a sell, short or buy
+    \item  Must calculate the confidence level of the forecast
+\end{enumerate}
+
+User interface
+\begin{enumerate}
+    \item Must display the forecast along with a confidence level
+    \item Must give recommendations for buying, shorting or selling
+    \item Consider giving alerts to help the user
+\end{enumerate}
+
+\subsubsection{Specific objectives}
+
+Gated Residual network
+\begin{enumerate}
+    \item Must have a dense network
+    \item Must have an exponential linear unit
+    \item Must have layer normalisation
+    \item Must have a residual connection between the input and output
+\end{enumerate}
+Variable Selection block
+\begin{enumerate}
+    \item Must have three GRNs
+    \item Must have a GRN with a softmax function
+    \item Must calculate the tensor product of the three GRNs
+\end{enumerate}
+LSTM encoder-decoder
+\begin{enumerate}
+    \item Must have an encoder model
+    \item Must have a decoder model
+    \item Must have a dense block
+\end{enumerate}
+Multi-head attention
+\begin{enumerate}
+    \item Must take the embedding size, the query size and attention heads as an input
+    \item Must have input embedding and position encoding layers to produce a matrix of shape
+    \item The matrix must be fed to the query, key and value of the first encoder in the stack
+    \item The input must be passed through linear layers to produce the Q, K and V matrices
+    \item The data must get split across the attention heads
+    \item The Q, K and V matrices must be reshaped
+    \item An attention score must be computed for each head
+    \item The attention scores must be merged together
+\end{enumerate}
+
+
+
+
+\section{Documented Design}
+
+IMAGES GO HERE, add later
+
+\subsection{Explaining nn.module}
+
+\begin{algorithm}[1]
+\caption{Linear Neural Network}
+\begin{algorithmic}
+\STATE $Convolution1 \leftarrow ConvertTo2d(x,y,z)$
+\STATE $Convolution2 \leftarrow ConvertTo2d(u,v,w)$
+\STATE $y \leftarrow Wx + b$
+\STATE $fc1 \leftarrow LinearTranformation()$ \Comment{Apply a linear transformation}
+\STATE $fc2 \leftarrow LinearTranformation()$
+\STATE $fc3 \leftarrow LinearTranformation()$
+\STATE $x \leftarrow Apply2DPool(RELU(Convolution1(x)), (2, 2))$
+\STATE $x \leftarrow Apply2DPool(RELU(Convolution1(x)),2 )$
+\STATE $RELU(fc1(x))$
+\STATE $RELU(fc2(x))$
+\RETURN $x$
+\end{algorithmic}
+\end{algorithm}
+
+
+\subsection{Positional Encoding}
+One of the reasons for using sine and cosine functions is that they are periodic and so whether the model is learning on a sequence of length 5, or of length 500, the encodings will always have the same range ([-1, 1]).  Positional embeddings are added to the original embeddings to retain all the positional information. Each vector will be parametrized and the stack row-wise to form a learnable positional embedding table.
+\\
+$PE_{pos+k}$ is some matrix which depends on k times PE_{pos}\\
+$$PE_{pos+k, 2i} = sin(\frac{pos}{a}+\frac{k}{a})$$\\
+$$ =sin(\frac{pos}{a})cos(\frac{k}{a})+sin(\frac{k}{a})cos(\frac{pos}{a})$$\\
+$$ =(PE_{pos,2i+1})U+(PE_{pos,2i})V$$\\
+$$ =(PE_{pos,2i},PE_{pos,2i+1})(V,U)$$\\
+
+\begin{algorithm}[1]
+\caption{Positional Encoder}
+\begin{algorithmic}
+\For{pos in range(maximum sequence length)}
+    \For{item in range(model)}
+
+    \EndFor
+\EndFor
+
+\end{algorithmic}
+\end{algorithm}
+
+\end{document}
+
+
+
+
+
