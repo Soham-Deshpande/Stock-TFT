@@ -12,6 +12,60 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from Activation_functions import *
+import torch.nn as nn
+
+
+
+class LSTM(nn.Module):
+
+    """
+    Long-Short Term Memory
+
+    h(t) = tanh(s)*sigma(b+sum{U*x}+sum{W*h})
+
+    Args:
+        int num_classes = number of classes
+        int num_layers  = number of layers
+        int input_size  = size of input layer
+        int hidden_size = size of hidden layer
+        int seq_length  = sequence length
+
+    """
+    def __init__(self, num_classes, input_size, hidden_size, num_layers, seq_length):
+        super(LSTM, self).__init__()
+        self.num_classes = num_classes
+        self.num_layers = num_layers
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.seq_length = seq_length
+
+        self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size,
+                          num_layers=num_layers, batch_first=True) #lstm
+        self.fc_1 =  nn.Linear(hidden_size, 128) #fully connected 1
+        self.fc = nn.Linear(128, num_classes) #fully connected last layer
+
+        self.relu = nn.ReLU()
+
+    def forward(self,x):
+        h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size)) #hidden state
+        c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size)) #internal state
+        # Propagate input through LSTM
+        output, (hn, cn) = self.lstm(x, (h_0, c_0)) #lstm with input, hidden, and internal state
+        hn = hn.view(-1, self.hidden_size) #reshaping the data for Dense layer next
+        out = self.relu(hn)
+        out = self.fc_1(out) #first Dense
+        out = self.relu(out) #relu
+        out = self.fc(out) #Final Output
+        return out
+
+
+
+
+
+
+
+
+
 
 INPUT = 28
 HIDDEN = 128
@@ -26,13 +80,15 @@ ITER_NUM = 1000
 LOG_ITER = ITER_NUM // 10
 PLOT_ITER = ITER_NUM // 200
 
-x = Sinh()
-print(x.sinh_deriv(1))
-const = 1
-tanh = (x.sinh(const)) / (x.sinh_deriv(const))
+#x = Sinh()
+#print(x.sinh_deriv(1))
+#const = 1
+#tanh = (x.sinh(const)) / (x.sinh_deriv(const))
+#print(tanh)
 
 
-class LSTM:
+
+class LSTM_prototype:
 
     def __init__(self, input, hidden, output, alpha, batch_size, iter_num, log_iter, plot_iter):
         self.input = input
@@ -45,7 +101,7 @@ class LSTM:
         self.plot_iter = plot_iter
         self.sigmoid = Sigmoid()
         self.sinh = Sinh()
-        self.softmax
+       # self.softmax
 
     def weights_biases(self, input, hidden):
         wf, wi, wc, wo, wy = 0

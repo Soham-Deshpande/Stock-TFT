@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>Python</ID>
+  <OriginalElement>#C:/Users/soham/PycharmProjects/NEA/Testing/transformer_github.py</OriginalElement>
+  <nodes>
+    <node x="413.0000000000002" y="1390.0">tensorflow.python.module.module.Module</node>
+    <node x="244.85294117647072" y="1650.0">tensorflow.python.keras.engine.base_layer.Layer</node>
+    <node x="534.5000000000001" y="1216.0">tensorflow.python.training.tracking.tracking.AutoTrackable</node>
+    <node x="572.0000000000001" y="4240.0">Testing.transformer_github.TransformerEncoder</node>
+    <node x="1220.0000000000002" y="4251.0">Testing.transformer_github.MultiAttention</node>
+    <node x="0.0" y="582.0">tensorflow.python.training.tracking.base.Trackable</node>
+    <node x="1132.8529411764705" y="0.0">typing.Hashable</node>
+    <node x="913.0000000000001" y="4251.0">Testing.transformer_github.SingleAttention</node>
+    <node x="1522.0000000000002" y="4240.0">Testing.transformer_github.Time2Vector</node>
+    <node x="1466.0" y="846.0">tensorflow.python.keras.utils.version_utils.LayerVersionSelector</node>
+    <node x="1094.8529411764705" y="104.0">object</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Testing.transformer_github.TransformerEncoder" target="tensorflow.python.keras.engine.base_layer.Layer" relationship="REALIZATION">
+      <point x="0.0" y="-60.0" />
+      <point x="732.5000000000001" y="4215.0" />
+      <point x="1197.8529411764707" y="4215.0" />
+      <point x="0.0" y="1270.0" />
+    </edge>
+    <edge source="tensorflow.python.training.tracking.base.Trackable" target="object" relationship="REALIZATION">
+      <point x="-5.6843418860808015E-14" y="-291.0" />
+      <point x="723.0" y="557.0" />
+      <point x="1197.8529411764705" y="557.0" />
+      <point x="0.0" y="214.0" />
+    </edge>
+    <edge source="tensorflow.python.keras.engine.base_layer.Layer" target="tensorflow.python.keras.utils.version_utils.LayerVersionSelector" relationship="REALIZATION">
+      <point x="0.0" y="-1270.0" />
+      <point x="1197.8529411764707" y="1624.0" />
+      <point x="1666.0" y="1624.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="tensorflow.python.module.module.Module" target="tensorflow.python.training.tracking.tracking.AutoTrackable" relationship="REALIZATION">
+      <point x="-5.6843418860808015E-14" y="-104.0" />
+      <point x="0.0" y="60.0" />
+    </edge>
+    <edge source="object" target="typing.Hashable" relationship="INTERFACE">
+      <point x="0.0" y="-214.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="tensorflow.python.keras.engine.base_layer.Layer" target="tensorflow.python.module.module.Module" relationship="REALIZATION">
+      <point x="0.0" y="-1270.0" />
+      <point x="1197.8529411764707" y="1624.0" />
+      <point x="723.0000000000002" y="1624.0" />
+      <point x="0.0" y="104.0" />
+    </edge>
+    <edge source="tensorflow.python.training.tracking.tracking.AutoTrackable" target="tensorflow.python.training.tracking.base.Trackable" relationship="REALIZATION">
+      <point x="-5.6843418860808015E-14" y="-60.0" />
+      <point x="0.0" y="291.0" />
+    </edge>
+    <edge source="Testing.transformer_github.Time2Vector" target="tensorflow.python.keras.engine.base_layer.Layer" relationship="REALIZATION">
+      <point x="0.0" y="-60.0" />
+      <point x="1656.5000000000002" y="4215.0" />
+      <point x="1197.8529411764707" y="4215.0" />
+      <point x="0.0" y="1270.0" />
+    </edge>
+    <edge source="tensorflow.python.keras.utils.version_utils.LayerVersionSelector" target="object" relationship="REALIZATION">
+      <point x="0.0" y="-27.0" />
+      <point x="1666.0" y="557.0" />
+      <point x="1197.8529411764705" y="557.0" />
+      <point x="0.0" y="214.0" />
+    </edge>
+    <edge source="Testing.transformer_github.SingleAttention" target="tensorflow.python.keras.engine.base_layer.Layer" relationship="REALIZATION">
+      <point x="0.0" y="-49.0" />
+      <point x="1056.5" y="4215.0" />
+      <point x="1197.8529411764707" y="4215.0" />
+      <point x="0.0" y="1270.0" />
+    </edge>
+    <edge source="Testing.transformer_github.MultiAttention" target="tensorflow.python.keras.engine.base_layer.Layer" relationship="REALIZATION">
+      <point x="0.0" y="-49.0" />
+      <point x="1361.0000000000002" y="4215.0" />
+      <point x="1197.8529411764707" y="4215.0" />
+      <point x="0.0" y="1270.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.1232876712328767" showDependencies="false" x="1075.5" y="2180.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+  </Categories>
+</Diagram>
+

@@ -7,11 +7,11 @@ class PositionalEncoder(torch.nn.Module):
     """
     PositionalEncoder
 
-
     PE(pos, 2i) = sin(pos / 10000^(2i / d_model))
     PE(pos, 2i+1) = cos(pos / 10000^(2i / d_model))
 
     """
+
     def __init__(self, d_model, max_len=5000):
         self.d_model = d_model # the size of the embedding vectors
         self.max_len = max_len
@@ -37,3 +37,6 @@ class PositionalEncoder(torch.nn.Module):
     def get_embedding_layer(self):
         return torch.nn.Embedding(self.max_len, self.d_model)
 
+
+
+PositionalEncoder = PositionalEncoder(512)

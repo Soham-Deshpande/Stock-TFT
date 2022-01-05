@@ -2,7 +2,7 @@
 #
 #   File       : GLU.py
 #   Author     : Soham Deshpande
-#   Date       : July 2021
+#   Date       : December 2021
 #   Description: Gated Residual Network
 #
 #
@@ -12,18 +12,31 @@
 from Activation_functions import ELU, Sigmoid
 from torch import nn
 
-def GLU():
-    return nn.Sequential(
-        nn.Conv2d(in_channels=128, out_channels=256, kernel_size=1, stride=1, padding=0),
-        nn.BatchNorm2d(256),
-        nn.PReLU(),
-        nn.Conv2d(in_channels=256, out_channels=512, kernel_size=3, stride=1, padding=1),
-        nn.BatchNorm2d(512),
-        nn.PReLU(),
-        nn.Conv2d(in_channels=512, out_channels=256, kernel_size=1, stride=1, padding=0),
-        nn.BatchNorm2d(256),
-        nn.PReLU(),
-        nn.Conv2d(in_channels=256, out_channels=128, kernel_size=1, stride=1, padding=0),
-        nn.BatchNorm2d(128),
-        nn.PReLU()
-    )
+
+
+class GRN(nn.Module):
+
+    """
+    Gated Residual Network
+    
+    GRN(x) = LayerNorm(a + GLU(Linear(a)))
+         
+    Args:
+       int   input_size  : Size of the input tensor
+       int   hidden_size : Size of the hidden layer
+       int   output_size : Size of the output layer
+       float   dropout   : Fraction between 0 and 1 showing the dropout rate
+       int   context_size: Size of the context vector
+       bool  is_temporal : Decides if the Temporal Layer has to be used or not
+
+    """
+
+    def __init__(self, input_size,hidden_size, output_size, dropout, context_size=None, is_temporal=True):
+        super().__init__()
+        self.input_size  = input_size
+        self.hidden_size = hidden_size
+        self.output_size = output_size
+        self.dropout     = dropout
+        self.is_temporal = is_temporal
+
+

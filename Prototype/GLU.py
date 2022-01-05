@@ -11,7 +11,7 @@
 from Activation_functions import Sigmoid
 from torch import nn
 
-class GLU():
+class GLU_prototype():
     def __init__(self, input_size,output_size):
         super().__init__()
 
@@ -27,34 +27,37 @@ class GLU():
 
 
 
+class GLU(nn.Module):
+    """
+    Gated Linear Unit
+    GLU(x,y) = multiply(x, sigmoid(y))
+
+    Args:
+        int input size: defines the size of the input matrix and output size of the gate
+
+    """
+
+    def __init__(self,input_size):
+        super().__init__()
+        #input
+        self.x = nn.Linear(input_size,input_size) # construct matrix 1
+
+        #Gate
+        self.y = nn.Linear(input_size, input_size) # construct matrix 2
+        self.sigmoid = nn.Sigmoid() # construct sigmoid function
 
 
+    def forward(self,a):
+        """
+        Args:
+            tensor a: tensor that passes through the gate
 
-#
-# class GLU:
-#     """
-#      Gated Linear Unit
-#
-#     h(x) = {(x*w + b)}*[tensor product]*{sigmoid[(x*w + c)]}
-#
-#     Args:
-#         size :
-#
-#     """
-#     def __init__(self, input_size, hidden_layer_size, dropout_rate):
-#         super().__init__()
-#         self.inp_size = input_size
-#         self.hidden_layer_size = hidden_layer_size
-#         self.dropout_rate = dropout_rate
-#         self.linear = nn.linear(input_size,input_size*2)
-#         self.sigmoid = Sigmoid()
-#
-#     def forward(self,x):
-#         out = self.linear(x)
-#         return out[:, :self.inp_size] * self.sigmoid.sigmoid_func(out[:, self.inp_size:])
-#
-# class GRN:
+        """
+        gate = self.sigmoid(self.y(x))
+        x = self.x(a)
 
-        
+        return torch.mul(gate, x) #multiply both tensors together
+
+
 
 
