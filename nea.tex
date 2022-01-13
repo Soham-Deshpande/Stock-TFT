@@ -74,19 +74,20 @@ In a regression model, we forecast the variable of interest using a linear combi
 \end{equation}
 
 These models are very good at handling different time series patterns. Changing the parameters, $\phi$ result in different patterns. $\epsilon$ is the error term; changing this will change the scale of the series. This model is very effective when it comes to stock prediction and so will therefore provide a baseline when it comes to the accuracy of the model.
-\begin{figure}
+\begin{figure}[h]
     \centering
-    \includegraphics[scale=0.35]{arima1}
+    \includegraphics[scale=0.1]{arima1}
     \caption{Plotting the data }
 \end{figure}
 The image above shows an implementation of auto regression on FTSE 100 data from 2010 to 2020. Green dots represent the predicted values while the red dots represent the actual values.
-\begin{figure}
+\clearpage
+\begin{figure}[h]
     \centering
-    \includegraphics[scale=0.35]{arima2}
+    \includegraphics[scale=0.21]{arima2}
     \caption{Using ARIMA on test data }
 \end{figure}
 Figure 3 shows the accuracy of the model at a respectable 89.21\% when using MSE as the loss function.
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[scale=0.35]{arima3}
     \caption{MSE Loss using ARIMA }
@@ -120,7 +121,7 @@ The most common activation functions are shown below along with their equation.
         \end{align*}
         \begin{figure}[h!]
             \centering
-            \includegraphics{binarystep}
+            \includegraphics[scale=0.15]{binarystep}
             \caption{Binary step function}
         \end{figure}
     \end{itemize}
@@ -159,7 +160,7 @@ The most common activation functions are shown below along with their equation.
         \end{itemize}
         \begin{figure}[h!]
             \centering
-            \includegraphics{tanh}
+            \includegraphics[scale=0.15]{tanh}
             \caption{Tanh function}
         \end{figure}
 
@@ -169,9 +170,9 @@ The most common activation functions are shown below along with their equation.
             \item Neurons will only deactivate if the output of the linear transformations less that 0\\
             Also a leaky version of ReLU present
         \end{itemize}
-        \begin{figure}[h!]
+        \begin{figure}[h]
             \centering
-            \includegraphics{relu}
+            \includegraphics[scale=0.15]{relu}
             \caption{ReLU function}
         \end{figure}
 
@@ -199,7 +200,7 @@ To make sure these values are actually valid probabilities, it can be checked ag
 Here is an example of the function
 \begin{figure}[h!]
             \centering
-            \includegraphics{softmax}
+            \includegraphics[scale=0.25]{softmax}
             \caption{Where a = 6.638 and b = 4.71}
         \end{figure}
         \end{itemize}
@@ -217,7 +218,7 @@ The exponential linear unit was designed to fix some of the problems with ReLUs.
 This  equation tells us that if the input, x, is greater than 0 then the output is the same as a RELU, y=x. If the input drops below 0, the value becomes slightly smaller than 0. This value will be modelled using (ex-1)where we choose a value for . The exponential operation makes this function more computationally expensive than a vanilla ReLU. The exponential function helps fix the vanishing gradient problem often associated with ReLUs. An advantage is that the ELU produces negative values which allows them to push mean unit activation close to zero, a bit like batch normalisation but with lower computational complexity. Mean shifts towards zero help speed up learning.
 \begin{figure}[h!]
             \centering
-            \includegraphics{elu1}
+            \includegraphics[scale=0.15]{elu1}
             \caption{ELU function}
         \end{figure}
 The derivative can be written as\\
@@ -227,7 +228,7 @@ The derivative can be written as\\
 The exponential function helps make this function differentiable at all points.  Below is the graph for the derivative:
 \begin{figure}[h!]
             \centering
-            \includegraphics{eluderiv}
+            \includegraphics[scale=0.15]{eluderiv}
             \caption{ELU derivative function}
         \end{figure}
 
@@ -238,12 +239,12 @@ The exponential function helps make this function differentiable at all points. 
 As shown in the figure below, in between the input and output layers there are hidden layers.  These layers contain many neurons. The equation that is used to model these neurons is shown in the second image, I have used the sigmoid function as an example of the calculation that may happen at a neuron. The summation of the weights multiplied by the input activity. A bias is then applied before the activation function, a sigmoid in my example, is applied to the result to determine whether the neuron should turn on or not.
 \begin{figure*}[h!]
             \centering
-            \includegraphics{layers1.jpg}
+            \includegraphics[scale=0.15]{layers1.jpg}
             \caption{Layers shown in a neural network}
         \end{figure*}
 \begin{figure}[h!]
             \centering
-            \includegraphics{layers2.jpg}
+            \includegraphics[scale=0.15]{layers2.jpg}
             \caption{Neuron represented mathematically}
         \end{figure}
 
@@ -265,7 +266,7 @@ One way to think about a loss function is to imagine it being a black box that w
 
 \begin{figure}[h!]
             \centering
-            \includegraphics{ff1.jpg}
+            \includegraphics[scale=0.15]{ff1.jpg}
             \caption{}
         \end{figure}
 Consider $w$ to be one of the weights discussed in the previous section.\\
@@ -317,17 +318,17 @@ back to the input in order to predict the output of the layer. This gives them t
 remember their last input.\\
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=3in]{rnn1}
+    \includegraphics[scale=0.15]{rnn1}
     \caption{RNN visualised }
 \end{figure}
 \begin{figure}[h]
     \centering
-    \includegraphics{rnn2}
+    \includegraphics[scale=0.15]{rnn2}
     \caption{RNN broken down into individual components }
 \end{figure}
 \begin{figure}[h]
     \centering
-    \includegraphics{rnn3}
+    \includegraphics[scale=0.15]{rnn3}
     \caption{}
 \end{figure}
 \subsubsection{Problems with RNN}
@@ -364,7 +365,7 @@ better preservation of long-range dependencies. These gates use functions that w
 mentioned before such as the tanh function, and the sigmoid function.
 \begin{figure}[h!]
     \centering
-    \includegraphics{lstm1}
+    \includegraphics[scale=0.15]{lstm1}
     \caption{}
 \end{figure}
 (Olah,2015)
@@ -401,7 +402,7 @@ repeated multiple times in parallel for all the words in the input sentence.\\
 This parallelisation increases its computational performance and produces a high accuracy.
 \begin{figure}[h!]
     \centering
-    \includegraphics{transformer1.jpg}
+    \includegraphics[scale=0.15]{transformer1.jpg}
     \caption{transformer model}
 \end{figure}
 (Vaswani et al., 2017)
@@ -446,7 +447,7 @@ modifications have to be made. The temporal fusion transformer is the evolution 
 type of data.
 \begin{figure}[h!]
     \centering
-    \includegraphics{tft1.jpg}
+    \includegraphics[scale=0.15]{tft1.jpg}
     \caption{Temporal Fusion Transformer broken down into its components}
 \end{figure}
 The TFT has 5 main parts that get you from a dataset to a prediction. These allow the TFT to
@@ -478,7 +479,7 @@ Given a tensor, two independent convolutions are done and we get two outputs. We
 \subsection{Gated Residual Network(GRN)}
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.5]{grn.png}
+    \includegraphics[scale=0.15]{grn.png}
     \caption{GRN visualised}
 \end{figure}
 
@@ -491,7 +492,7 @@ $$\phi_1,\phi_2\in R $$
 \subsection{Variable Selection Network}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.25\textwidth]{vsn.png}}
+    \includegraphics[scale=0.15]{vsn.png}}
     \caption{Variable Selection Network visualised}
 \end{figure}
 
