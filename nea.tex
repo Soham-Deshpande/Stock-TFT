@@ -239,12 +239,12 @@ The exponential function helps make this function differentiable at all points. 
 As shown in the figure below, in between the input and output layers there are hidden layers.  These layers contain many neurons. The equation that is used to model these neurons is shown in the second image, I have used the sigmoid function as an example of the calculation that may happen at a neuron. The summation of the weights multiplied by the input activity. A bias is then applied before the activation function, a sigmoid in my example, is applied to the result to determine whether the neuron should turn on or not.
 \begin{figure*}[h!]
             \centering
-            \includegraphics[scale=0.15]{layers1.jpg}
+            \includegraphics[scale=0.15]{layers1}
             \caption{Layers shown in a neural network}
         \end{figure*}
 \begin{figure}[h!]
             \centering
-            \includegraphics[scale=0.15]{layers2.jpg}
+            \includegraphics[scale=0.15]{layers2}
             \caption{Neuron represented mathematically}
         \end{figure}
 
@@ -266,7 +266,7 @@ One way to think about a loss function is to imagine it being a black box that w
 
 \begin{figure}[h!]
             \centering
-            \includegraphics[scale=0.15]{ff1.jpg}
+            \includegraphics[scale=0.15]{ff1}
             \caption{}
         \end{figure}
 Consider $w$ to be one of the weights discussed in the previous section.\\
@@ -402,7 +402,7 @@ repeated multiple times in parallel for all the words in the input sentence.\\
 This parallelisation increases its computational performance and produces a high accuracy.
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.15]{transformer1.jpg}
+    \includegraphics[scale=0.15]{transformer1}
     \caption{transformer model}
 \end{figure}
 (Vaswani et al., 2017)
@@ -447,7 +447,7 @@ modifications have to be made. The temporal fusion transformer is the evolution 
 type of data.
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.15]{tft1.jpg}
+    \includegraphics[scale=0.15]{tft1}
     \caption{Temporal Fusion Transformer broken down into its components}
 \end{figure}
 The TFT has 5 main parts that get you from a dataset to a prediction. These allow the TFT to
@@ -479,7 +479,7 @@ Given a tensor, two independent convolutions are done and we get two outputs. We
 \subsection{Gated Residual Network(GRN)}
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.15]{grn.png}
+    \includegraphics[scale=0.15]{grn}
     \caption{GRN visualised}
 \end{figure}
 
@@ -492,7 +492,7 @@ $$\phi_1,\phi_2\in R $$
 \subsection{Variable Selection Network}
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.15]{vsn.png}}
+    \includegraphics[scale=0.15]{vsn}}
     \caption{Variable Selection Network visualised}
 \end{figure}
 
@@ -525,14 +525,16 @@ I have chosen to use python to code my project due to a few reasons. The first r
 Another reason is that Python has a very big library for machine learning. This makes prototyping and implementing my own algorithm a lot easier as well as being able to visualise my code a lot easier with packages such as pyplot.
 My other option was C/C++ where I would’ve had benefits such as more compact and faster runtime. Python does offer extensions or libraries that optimise the Python code. An example is Theano. Unlike C++ where specific optimisations need to be made, Python can run nearly any system without any time being wasted on specific configurations. Python also has access to libraries such as CUDA python. Libraries like that are made to help with parallelisation on GPUs. This exploits the tensor cores that are offered by the hardware manufacturers. The power to be able offload tasks to the GPU makes any performance advantage C++ had, instantly insignificant.
 GIE is the NVIDIA GPU inference engine.
-\begin{wrapfigure}{l}{0.25\textwidth}
+\begin{figure}
     \centering
-    \includegraphics[width=0.25\textwidth]{codinglan1.png}
-\end{wrapfigure}
-\begin{wrapfigure}{l}{0.25\textwidth}
+    \includegraphics[scale = 0.15]{software1}
+    \caption{}
+\end{figure}
+\begin{figure}
     \centering
-    \includegraphics[width=0.25\textwidth]{codinglan2.png}
-\end{wrapfigure}
+    \includegraphics[scale = 0.15]{software2}
+    \caption{}
+\end{figure}
 The graph shows the advantage GPUs provide for training deep learning models.
 
 \subsubsection{Packages}
@@ -609,7 +611,100 @@ Multi-head attention
 
 \clearpage
 \section{Documented Design}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.6]{hd1}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.6]{hd2}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.35]{hd3}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.4]{hd4}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.4]{hd5}
+    \caption{}
+\end{figure}
+\clearpage
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.5]{hd6}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.15]{hd7}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.6]{hd8}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.315]{hd9}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.35]{hd10}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.35]{hd11}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.35]{hd12}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.35]{h13}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.25]{hd14}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.15]{hd15}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.15]{attention1}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.2]{backprop1}
+    \caption{}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale = 0.4]{tft2}
+    \caption{}
+\end{figure}
 
+
+\clearpage
 IMAGES GO HERE, add later
 
 
@@ -889,15 +984,16 @@ $$ =sin(\frac{pos}{a})cos(\frac{k}{a})+sin(\frac{k}{a})cos(\frac{pos}{a})$$\\
 $$ =(PE_{pos,2i+1})U+(PE_{pos,2i})V$$\\
 $$ =(PE_{pos,2i},PE_{pos,2i+1})(V,U)$$\\
 %\end{equation}
+
 \begin{algorithm}
 \caption{Positional Encoder}
-\begin{algorithmic}[1]
-\For{pos in range(maximum sequence length)}
-    \For{item in range(model)}
-
-    \EndFor
+\begin{algorithmic}
+\For{pos in  0 $\leftarrow$ maximum sequence length}
+    \State{compute V$\times$PE(pos,2i)}
+    \State{computeW$\times$PE(pos,2i)}
+    \State{compute V$\times$PE(pos,2i+1)}
+    \State{compute W$\times$PE(pos,2i+1)}
 \EndFor
-
 \end{algorithmic}
 \end{algorithm}
 
@@ -952,8 +1048,23 @@ Computing the partial derivatives for each input-output pair:
     $$ = \frac{1}{N}\sum_{d=1}^{N}\frac{\partial{E_d}}{\partial{w_ij^k}}$$
 Updating weights:
 $$ \Delta w_ij^k = -\alpha \frac{\partial{E(X,\theta)}}{\partial{w_ij^k}}$$
-
-
+\begin{algorithm}
+\caption{Backpropagation}
+\begin{algorithmic}[1]
+\Function{Backpropagation}{inputs, expected, output}
+    \State {deltas $\leftarrow$delta inputs}
+    \Repeat{}
+    \For{i in deltas}
+        \State{error $\leftarrow$ expected[i] - output
+        deltas[i]$\leftarrow$ error$\times$sigmoid}
+    \For{j in hidden layers}
+        \For{k in hidden weights}
+           \State{delta weights$\leftarrow$ weight[j] $\times$ outputdeltas[k]}
+            \State{deltaweights$\times$ learning rate}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+\clearpage
 \begin{lstlisting}
 # backpropagate() takes as input, the patterns entered, the target values and the obtained values.
 # Based on these values, it adjusts the weights so as to balance out the error.
