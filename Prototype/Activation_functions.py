@@ -1,6 +1,6 @@
 # All Activation Functions here
 import numpy as np
-
+#
 
 # sigmoid function
 # refer to write up for graph vs computing values
@@ -71,11 +71,11 @@ class Sinh:
 
 
 
-x = Sinh()
-print(x.sinh_deriv(1))
-const = 1
-tanh = (x.sinh(const))/(x.sinh_deriv(const))
-print(tanh)
+#x = Sinh()
+#print(x.sinh_deriv(1))
+#const = 1
+#tanh = (x.sinh(const))/(x.sinh_deriv(const))
+#print(tanh)
 
 #dont need cosh function as deriv of sinh is cosh
 # tanh can be worked out by doing sinh / d/dx{sinh}
