@@ -6,13 +6,34 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{adjustbox}
-\usepackage{algopseudocode}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{algpseudocode}
 \graphicspath{{/home/soham/Desktop/NEAlatex/images/}}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
 
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 \title{Deep Stock Prediction}
 
 \author{Soham Deshpande}
-\date{December 2021}
+\date{January 2022}
 
 \begin{document}
 
@@ -53,21 +74,21 @@ In a regression model, we forecast the variable of interest using a linear combi
 \end{equation}
 
 These models are very good at handling different time series patterns. Changing the parameters, $\phi$ result in different patterns. $\epsilon$ is the error term; changing this will change the scale of the series. This model is very effective when it comes to stock prediction and so will therefore provide a baseline when it comes to the accuracy of the model.
-\begin{figure}[h!]
-    %\centering
-  \includegraphics[width=100mm]{arima1}
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.35]{arima1}
     \caption{Plotting the data }
 \end{figure}
 The image above shows an implementation of auto regression on FTSE 100 data from 2010 to 2020. Green dots represent the predicted values while the red dots represent the actual values.
-\begin{wrapfigure}
+\begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{arima2}
+    \includegraphics[scale=0.35]{arima2}
     \caption{Using ARIMA on test data }
-\end{wrapfigure}
+\end{figure}
 Figure 3 shows the accuracy of the model at a respectable 89.21\% when using MSE as the loss function.
 \begin{figure}[h!]
     \centering
-    \includegraphics[max size={\textwidth\textheight}]{arima3}
+    \includegraphics[scale=0.35]{arima3}
     \caption{MSE Loss using ARIMA }
 \end{figure}
 
@@ -202,7 +223,7 @@ This  equation tells us that if the input, x, is greater than 0 then the output 
 The derivative can be written as\\
 \begin{equation*}
             ELU'(x) = 	1 \mbox{ if }  x > 0 \mbox{ or } \alpha(e^{x})  \mbox{ if } x <  0
-        \end{equation*}
+       \end{equation*}
 The exponential function helps make this function differentiable at all points.  Below is the graph for the derivative:
 \begin{figure}[h!]
             \centering
@@ -296,17 +317,17 @@ back to the input in order to predict the output of the layer. This gives them t
 remember their last input.\\
 \begin{figure}[h!]
     \centering
-    \includegraphics{rnn1.jpg}
+    \includegraphics[width=3in]{rnn1}
     \caption{RNN visualised }
 \end{figure}
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
-    \includegraphics{rnn2.jpg}
+    \includegraphics{rnn2}
     \caption{RNN broken down into individual components }
 \end{figure}
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
-    \includegraphics{rnn3.jpg}
+    \includegraphics{rnn3}
     \caption{}
 \end{figure}
 \subsubsection{Problems with RNN}
@@ -343,7 +364,7 @@ better preservation of long-range dependencies. These gates use functions that w
 mentioned before such as the tanh function, and the sigmoid function.
 \begin{figure}[h!]
     \centering
-    \includegraphics{lstm1.jpg}
+    \includegraphics{lstm1}
     \caption{}
 \end{figure}
 (Olah,2015)
@@ -381,7 +402,8 @@ This parallelisation increases its computational performance and produces a high
 \begin{figure}[h!]
     \centering
     \includegraphics{transformer1.jpg}
-    \caption{}
+    \caption{transformer model}
+\end{figure}
 (Vaswani et al., 2017)
 
 \subsection{Attention}
@@ -456,7 +478,7 @@ Given a tensor, two independent convolutions are done and we get two outputs. We
 \subsection{Gated Residual Network(GRN)}
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.25\textwidth]{grn.png}
+    \includegraphics[scale=0.5]{grn.png}
     \caption{GRN visualised}
 \end{figure}
 
@@ -584,16 +606,194 @@ Multi-head attention
 
 
 
-
+\clearpage
 \section{Documented Design}
 
 IMAGES GO HERE, add later
 
-\subsection{Explaining nn.module}
 
-\begin{algorithm}[1]
+The TFT can be modelled using the structure below. This shows the flow of data through one epoch of the network.  Each module has the dimensions, input features, output features, activation functions and learning rate specified.
+
+\begin{lstlisting}
+TemporalFusionTransformer(
+  (loss): QuantileLoss()
+  (logging_metrics): ModuleList(
+    (0): SMAPE()
+    (1): MAE()
+    (2): RMSE()
+    (3): MAPE()
+  )
+  (input_embeddings): MultiEmbedding(
+    (embeddings): ModuleDict()
+  )
+  (prescalers): ModuleDict()
+  (static_variable_selection): VariableSelectionNetwork(
+    (single_variable_grns): ModuleDict()
+    (prescalers): ModuleDict()
+    (softmax): Softmax(dim=-1)
+  )
+  (encoder_variable_selection): VariableSelectionNetwork(
+    (single_variable_grns): ModuleDict()
+    (prescalers): ModuleDict()
+    (softmax): Softmax(dim=-1)
+  )
+  (decoder_variable_selection): VariableSelectionNetwork(
+    (single_variable_grns): ModuleDict()
+    (prescalers): ModuleDict()
+    (softmax): Softmax(dim=-1)
+  )
+  (static_context_variable_selection): GatedResidualNetwork(
+    (fc1): Linear(in_features=16, out_features=16, bias=True)
+    (elu): ELU(alpha=1.0)
+    (fc2): Linear(in_features=16, out_features=16, bias=True)
+    (gate_norm): GateAddNorm(
+      (glu): GatedLinearUnit(
+        (dropout): Dropout(p=0.1, inplace=False)
+        (fc): Linear(in_features=16, out_features=32, bias=True)
+      )
+      (add_norm): AddNorm(
+        (norm): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+      )
+    )
+  )
+  (static_context_initial_hidden_lstm): GatedResidualNetwork(
+    (fc1): Linear(in_features=16, out_features=16, bias=True)
+    (elu): ELU(alpha=1.0)
+    (fc2): Linear(in_features=16, out_features=16, bias=True)
+    (gate_norm): GateAddNorm(
+      (glu): GatedLinearUnit(
+        (dropout): Dropout(p=0.1, inplace=False)
+        (fc): Linear(in_features=16, out_features=32, bias=True)
+      )
+      (add_norm): AddNorm(
+        (norm): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+      )
+    )
+  )
+  (static_context_initial_cell_lstm): GatedResidualNetwork(
+    (fc1): Linear(in_features=16, out_features=16, bias=True)
+    (elu): ELU(alpha=1.0)
+    (fc2): Linear(in_features=16, out_features=16, bias=True)
+    (gate_norm): GateAddNorm(
+      (glu): GatedLinearUnit(
+        (dropout): Dropout(p=0.1, inplace=False)
+        (fc): Linear(in_features=16, out_features=32, bias=True)
+      )
+      (add_norm): AddNorm(
+        (norm): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+      )
+    )
+  )
+  (static_context_enrichment): GatedResidualNetwork(
+    (fc1): Linear(in_features=16, out_features=16, bias=True)
+    (elu): ELU(alpha=1.0)
+    (fc2): Linear(in_features=16, out_features=16, bias=True)
+    (gate_norm): GateAddNorm(
+      (glu): GatedLinearUnit(
+        (dropout): Dropout(p=0.1, inplace=False)
+        (fc): Linear(in_features=16, out_features=32, bias=True)
+      )
+      (add_norm): AddNorm(
+        (norm): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+      )
+    )
+  )
+  (lstm_encoder): LSTM(16, 16, batch_first=True)
+  (lstm_decoder): LSTM(16, 16, batch_first=True)
+  (post_lstm_gate_encoder): GatedLinearUnit(
+    (dropout): Dropout(p=0.1, inplace=False)
+    (fc): Linear(in_features=16, out_features=32, bias=True)
+  )
+  (post_lstm_gate_decoder): GatedLinearUnit(
+    (dropout): Dropout(p=0.1, inplace=False)
+    (fc): Linear(in_features=16, out_features=32, bias=True)
+  )
+  (post_lstm_add_norm_encoder): AddNorm(
+    (norm): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+  )
+  (post_lstm_add_norm_decoder): AddNorm(
+    (norm): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+  )
+  (static_enrichment): GatedResidualNetwork(
+    (fc1): Linear(in_features=16, out_features=16, bias=True)
+    (elu): ELU(alpha=1.0)
+    (context): Linear(in_features=16, out_features=16, bias=False)
+    (fc2): Linear(in_features=16, out_features=16, bias=True)
+    (gate_norm): GateAddNorm(
+      (glu): GatedLinearUnit(
+        (dropout): Dropout(p=0.1, inplace=False)
+        (fc): Linear(in_features=16, out_features=32, bias=True)
+      )
+      (add_norm): AddNorm(
+        (norm): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+      )
+    )
+  )
+  (multihead_attn): InterpretableMultiHeadAttention(
+    (dropout): Dropout(p=0.1, inplace=False)
+    (v_layer): Linear(in_features=1, out_features=4, bias=True)
+    (q_layers): ModuleList(
+      (0): Linear(in_features=16, out_features=4, bias=True)
+      (1): Linear(in_features=16, out_features=4, bias=True)
+      (2): Linear(in_features=16, out_features=4, bias=True)
+      (3): Linear(in_features=16, out_features=4, bias=True)
+    )
+    (k_layers): ModuleList(
+      (0): Linear(in_features=16, out_features=4, bias=True)
+      (1): Linear(in_features=16, out_features=4, bias=True)
+      (2): Linear(in_features=16, out_features=4, bias=True)
+      (3): Linear(in_features=16, out_features=4, bias=True)
+    )
+    (attention): ScaledDotProductAttention(
+      (softmax): Softmax(dim=2)
+    )
+    (w_h): Linear(in_features=4, out_features=16, bias=False)
+  )
+  (post_attn_gate_norm): GateAddNorm(
+    (glu): GatedLinearUnit(
+      (dropout): Dropout(p=0.1, inplace=False)
+      (fc): Linear(in_features=16, out_features=32, bias=True)
+    )
+    (add_norm): AddNorm(
+      (norm): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (pos_wise_ff): GatedResidualNetwork(
+    (fc1): Linear(in_features=16, out_features=16, bias=True)
+    (elu): ELU(alpha=1.0)
+    (fc2): Linear(in_features=16, out_features=16, bias=True)
+    (gate_norm): GateAddNorm(
+      (glu): GatedLinearUnit(
+        (dropout): Dropout(p=0.1, inplace=False)
+        (fc): Linear(in_features=16, out_features=32, bias=True)
+      )
+      (add_norm): AddNorm(
+        (norm): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+      )
+    )
+  )
+  (pre_output_gate_norm): GateAddNorm(
+    (glu): GatedLinearUnit(
+      (fc): Linear(in_features=16, out_features=32, bias=True)
+    )
+    (add_norm): AddNorm(
+      (norm): LayerNorm((16,), eps=1e-05, elementwise_affine=True)
+    )
+  )
+  (output_layer): Linear(in_features=16, out_features=7, bias=True)
+)
+
+
+\end{lstlisting}
+
+
+
+
+\subsection{Explaining nn.module}
+Below is the pseduocode for the module followed by the python code.
+\begin{algorithm}
 \caption{Linear Neural Network}
-\begin{algorithmic}
+\begin{algorithmic}[1]
 \STATE $Convolution1 \leftarrow ConvertTo2d(x,y,z)$
 \STATE $Convolution2 \leftarrow ConvertTo2d(u,v,w)$
 \STATE $y \leftarrow Wx + b$
@@ -609,18 +809,88 @@ IMAGES GO HERE, add later
 \end{algorithm}
 
 
+\begin{lstlisting}
+import math
+import numpy as np
+
+#Vanilla Neural Network from scratch
+class Layer_Dense:
+    def __init__(self, n_inputs, n_neurons):
+        self.weights = 0.10 * np.random.randn(n_inputs, n_neurons)
+        self.biases = np.zeros((1, n_neurons))
+
+   def forward(self, inputs):
+        self.output = np.dot(inputs, self.weights) + self.biases
+
+
+#Activation Functions
+class Activation_ReLU:
+    def forward(self, inputs):
+        self.output = np.maximum(0, inputs)
+
+class Activation_sigmoid:
+    def forward(self, inputs):
+        self.output = np.exp()
+
+layer1 = Layer_Dense(2,5)
+activation1 = Activation_ReLU()
+layer2 = Layer_Dense(2,5)
+activation2 = Activation_sigmoid()
+layer1.forward(X)
+print(layer1.forward(x))
+
+
+#using nn.module
+class Net(nn.Module):
+
+    def __init__(self):
+        super(Net, self).__init__()
+        # 1 input image channel, 6 output channels, 5x5 square convolution kernel
+        self.conv1 = nn.Conv2d(1, 6, 5)
+        self.conv2 = nn.Conv2d(6, 16, 5)
+
+        # an affine operation: y = Wx + b
+        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, 10)
+
+    def forward(self, x):
+        # Max pooling over a (2, 2) window
+        x = F.max_pool2d(F.relu(self.conv1(x)), (2, 2))
+
+        # 2 is ame as (2, 2)
+        x = F.max_pool2d(F.relu(self.conv2(x)), 2)
+
+        x = x.view(-1, self.num_flat_features(x))
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+
+        return x
+
+    def num_flat_features(self, x):
+        size = x.size()[1:]  # all dimensions except the batch dimension
+        num_features = 1
+        for s in size:       # Get the products
+            num_features *= s
+        return num_features
+\end{lstlisting}
+
+\clearpage
+
 \subsection{Positional Encoding}
 One of the reasons for using sine and cosine functions is that they are periodic and so whether the model is learning on a sequence of length 5, or of length 500, the encodings will always have the same range ([-1, 1]).  Positional embeddings are added to the original embeddings to retain all the positional information. Each vector will be parametrized and the stack row-wise to form a learnable positional embedding table.
 \\
+%\begin{equation}
 $PE_{pos+k}$ is some matrix which depends on k times PE_{pos}\\
 $$PE_{pos+k, 2i} = sin(\frac{pos}{a}+\frac{k}{a})$$\\
 $$ =sin(\frac{pos}{a})cos(\frac{k}{a})+sin(\frac{k}{a})cos(\frac{pos}{a})$$\\
 $$ =(PE_{pos,2i+1})U+(PE_{pos,2i})V$$\\
 $$ =(PE_{pos,2i},PE_{pos,2i+1})(V,U)$$\\
-
-\begin{algorithm}[1]
+%\end{equation}
+\begin{algorithm}
 \caption{Positional Encoder}
-\begin{algorithmic}
+\begin{algorithmic}[1]
 \For{pos in range(maximum sequence length)}
     \For{item in range(model)}
 
@@ -629,6 +899,214 @@ $$ =(PE_{pos,2i},PE_{pos,2i+1})(V,U)$$\\
 
 \end{algorithmic}
 \end{algorithm}
+
+
+\\Python code:
+
+
+\begin{lstlisting}
+#positional encoding
+import torch
+import math
+
+
+class PositionalEncoder(torch.nn.Module):
+    def __init__(self, d_model, max_len=5000):
+        self.d_model = d_model # the size of the embedding vectors
+        self.max_len = max_len
+        # Compute the positional encodings once in log space complexity
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, d_model, 2) *
+                             -(math.log(10000.0) / d_model))
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        pe = pe.unsqueeze(0)
+        self.register_buffer('pe', pe)
+
+    def forward(self, x):
+        x = x + self.pe[:, :x.size(1)]
+        return x
+
+    def get_embedding(self, x):
+        x = x + self.pe[:, :x.size(1)]
+        return x
+
+    def get_embedding_layer(self):
+        return torch.nn.Embedding(self.max_len, self.d_model)
+
+\end{lstlisting}
+\clearpage
+\subsection{Backpropagation}
+The formula for the backpropagation algorithm has been proven earlier in the analysis. Below is a reminder of the mathematical definition along with a flowchart and pseudocode.
+
+Partial derivatives:
+$$\frac{\partial{E_d}}{\partial{w_j^k}} = \delta_j^k o_i^{k-1}$$
+Final layer's error term:
+$$\delta_1^m = g_o'(a_1^m)(\hat{y_d-y_d})$$
+Hidden layers' error terms:
+$$\delta_j^k = g''(a_j^k)\sum_{L=1}^{r^{k+1}}w^{k+1}_jL\delta_l^{k+1}$$
+Computing the partial derivatives for each input-output pair:
+    $$\frac{\partial{E(X,\theta)}}{\partial{w_ij^k}}= \frac{1}{N}\sum_{d=1}^{N}\frac{\delta}{\delta w_ij^k}(\frac{1}{2}(\hat{y_d}-y_d)^2)$$
+    $$ = \frac{1}{N}\sum_{d=1}^{N}\frac{\partial{E_d}}{\partial{w_ij^k}}$$
+Updating weights:
+$$ \Delta w_ij^k = -\alpha \frac{\partial{E(X,\theta)}}{\partial{w_ij^k}}$$
+
+
+\begin{lstlisting}
+# backpropagate() takes as input, the patterns entered, the target values and the obtained values.
+# Based on these values, it adjusts the weights so as to balance out the error.
+# Also, now we have M, N for momentum and learning factors respectively.
+def backpropagate(self, inputs, expected, output, N=0.5, M=0.1):
+	# We introduce a new matrix called the deltas (error) for the two layers output and hidden layer respectively.
+	output_deltas = [0.0]*self.no
+	for k in range(self.no):
+		# Error is equal to (Target value - Output value)
+		error = expected[k] - output[k]
+		output_deltas[k]=error*dsigmoid(self.ao[k])
+
+	# Change weights of hidden to output layer accordingly.
+	for j in range(self.nh):
+		for k in range(self.no):
+			delta_weight = self.ah[j] * output_deltas[k]
+			self.who[j][k]+= M*self.cho[j][k] + N*delta_weight
+			self.cho[j][k]=delta_weight
+
+	# Now for the hidden layer.
+	hidden_deltas = [0.0]*self.nh
+	for j in range(self.nh):
+		# Error as given by formule is equal to the sum of (Weight from each node in hidden layer times output delta of output node)
+		# Hence delta for hidden layer = sum (self.who[j][k]*output_deltas[k])
+		error=0.0
+		for k in range(self.no):
+			error+=self.who[j][k] * output_deltas[k]
+		# now, change in node weight is given by dsigmoid() of activation of each hidden node times the error.
+		hidden_deltas[j]= error * dsigmoid(self.ah[j])
+
+	for i in range(self.ni):
+		for j in range(self.nh):
+			delta_weight = hidden_deltas[j] * self.ai[i]
+			self.wih[i][j]+= M*self.cih[i][j] + N*delta_weight
+			self.cih[i][j]=delta_weight
+\end{lstlisting}
+\clearpage
+\subsection{Dense Network}
+This is the fundamental block, similar to the nn.module. This is another vanilla
+neural network.
+
+\begin{lstlisting}
+class Dense_Network:
+    def __init__(self, input_shape, output_shape, activation, weights, biases):
+        self.input_shape = input_shape
+        self.output_shape = output_shape
+        self.activation = activation
+        self.weights = weights
+        self.biases = biases
+        self.output = None
+        self.input = None
+
+    def forward_pass(self, input):
+        self.input = input
+        self.output = np.dot(self.input, self.weights) + self.biases
+        self.output = self.activation(self.output)
+        return self.output
+
+    def backward_pass(self, error):
+        self.error = error
+        self.error = self.error * self.activation(self.output, derivative=True)
+        self.weights_error = np.dot(self.input.T, self.error)
+        self.biases_error = np.sum(self.error, axis=0)
+        return self.error
+
+    def update_weights(self, learning_rate):
+        self.weights = self.weights - learning_rate * self.weights_error
+        self.biases = self.biases - learning_rate * self.biases_error
+
+    def get_weights(self):
+        return self.weights
+
+
+\end{lstlisting}
+
+\clearpage
+
+\subsection{Layer Normalisation}
+
+\subsubsection{The need for normalisation}
+The main issue that normalisation works to solve is the problem of internal
+covariate shift. These shifts occur during each epoch/round of training due to weights
+being updated and different data being processed. This means that each input to a
+neuron is slightly different each time. The input distrubution of the inputs starts
+to deform.
+These small changes would have an insignificant impact on smaller architectures
+such as a single lstm or a vanilla RNN but when dealing with bigger models such as Transformers
+or TFTs small changes in the input distribution can amplify and have a catastrophic
+impact on the deep learning.
+Normlisation also tackles the vanishing gradient issue. This is where the activation
+function sacturates. The functions approach a limit as the inputs tend to large values.
+This limit is where the gradient starts to shrink to a point where the function becomes
+unusable. As discussed in the activation functions section, different activation functions
+can be used to mitigate this problem as well as normalising the inputs.
+
+\subsubsection{Layer Normalisation}
+
+
+Given inputs $x$ over a batch size $m$, $B = {x_1,x_2, ..., x_m}$, each sample $x_i$ contains $K$ elements by applying transformations of the inputs using learned parameters
+$\gamma$ and $\beta$, the outputs could be expressed as $B' = {y_1,y_2,...,y_m}$ where
+$y_i=LN_{\gamma,\beta}(x_i)$. \\
+We first start of by calculating the mean and variance of each sample from the batch.
+For sample $x$, we have the mean, $\mu_i$, and the variance, $\sigma_i^2$
+$$\mu_i = \frac{1}{K}\sum^K_{k=1}x_{i,k}$$
+$$\sigma_i^2 = \frac{1}{K}\sum^K_{k=1}(x_{i,k}-\mu_i)^2$$
+Each sample is then normalised arounf a zero mean and unit variance. $\epsilon$ has been used for numerical stability incase the denominator becomes zero.
+$$\hat{x_i},k= \frac{x_{i,k}-\mu_i}{\sqrt{\sigma_i^2+\epsilon}}$$
+Scaling and shfiting is then finally done using $\gamma$ and $\beta$ which are learnable parameters.
+$$y_i = \gamma \hat{x_i}+\beta \equiv LN_{\gamma,\beta}(x_i)$$
+The maths above shows how this normalisation technique has no dependancy on other samples in the batch.
+\subsubsection{Batch normalisation vs layer normalisation}
+Batch normaltion has a few issues that are key to training a TFT. One of which is that
+it is hard to parallise batch-normalised models. The dependancy between all the elements
+ means that there is a need for synchronisation across all devices being used to train the model. Transformer models such as a TFT require a large scale setup to combat the
+ mathematical complexity and intensities. Layer normalisation provides some degree of
+ normalisation while not needing a dependancy on other elements making it more suitable
+ for my model.
+ \clearpage
+\subsection{Data Structures}
+The data is initially stored in a CSV file. The data is then converted into a 2x1 matrix before it is turned into a 2x2 matrix. These are implemented using lists in python. The data, as it goes through the model, gets converted into tensors.
+The attention module is modelled using dictionaries.
+My weights will also be stored in tensors.
+Derivatives will be stored in a Jacobian matrix.
+\clearpage
+\subsection{File Structure}
+Data
+\begin{itemize}
+\item Training
+\item Stock data
+\item Validation
+\item Pre-training alternate dataset
+\end{itemize}
+Modules
+\begin{itemize}
+\item Data Prepocessing
+\item Activation Functions
+\item Attention module
+\item Data loaders
+\item Dense Network
+\item Gated Linear Unit
+\item Layer Normalisation
+\item LSTM
+\item Positional Encoder
+\item Time Distributed layer
+\item Variable Selection Network
+\item Loss Functions
+\item Batch Normlaisation
+\item OZE Loss
+\item Dense Block
+\item MutiHead Attention
+\item Main TFT
+\item Quantile Forecasts
+\item Model Tuning
+\end{itemize}
 
 \end{document}
 
