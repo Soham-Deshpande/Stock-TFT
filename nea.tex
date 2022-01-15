@@ -439,7 +439,7 @@ up). The intuition here is to keep intact the values of the word(s) we want to f
 drown-out outliers (by multiplying them by tiny numbers like 0.001, for example).
 The sixth step is to sum up the weighted value vectors. This produces the output of the
 self-attention layer at this position for the first value.
-
+\clearpage
 \subsection{Temporal Fusion Transformers}
 (Lim, 2020)
 Attention is very useful for natural language processing but when handling time series data,
@@ -447,7 +447,7 @@ modifications have to be made. The temporal fusion transformer is the evolution 
 type of data.
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.15]{tft1}
+    \includegraphics[scale=0.2]{tft}
     \caption{Temporal Fusion Transformer broken down into its components}
 \end{figure}
 The TFT has 5 main parts that get you from a dataset to a prediction. These allow the TFT to
@@ -611,42 +611,62 @@ Multi-head attention
 
 \clearpage
 \section{Documented Design}
+\subsubsection{Heirarchy Diagram}
+The project can be split into 3 main sections: data preprocessing, the temporal fusion transformer model and the quantile forecasts.
 \begin{figure}[ht]
     \centering
     \includegraphics[scale = 0.6]{hd1}
     \caption{}
 \end{figure}
+Data processing can also be split into 3 parts: Processing, normalisation and adding time embeddings.
 \begin{figure}[ht]
     \centering
     \includegraphics[scale = 0.6]{hd2}
     \caption{}
 \end{figure}
+Below is a structure diagram of the Temporal Fusion Transformer. It is split into 4 sections: Gated Blocks, LSTM, Variable Selection Network and Multi-head Attention. Each of those sections are further subdivided into the different types of that object.
 \begin{figure}[ht]
     \centering
     \includegraphics[scale = 0.35]{hd3}
     \caption{}
 \end{figure}
+The Quantile outputs are split into functions that are used in the main TFT model, layer normalisation, GRU and GLU. These together will form the forecasts at the end.
 \begin{figure}[ht]
     \centering
     \includegraphics[scale = 0.4]{hd4}
     \caption{}
 \end{figure}
+The Gated Residual unit can be broken up into 3 parts: the dense network, the exponential unit and the addition and normalisation layer.
 \begin{figure}[ht]
     \centering
     \includegraphics[scale = 0.4]{hd5}
     \caption{}
 \end{figure}
+This figure shows an overview of the Data Preprocessing. This part of the program will ensure that all the data is fit to be fed to the model and will convert the values into a form that is best for the machine learning module(TFT). This process includes removing all null values, creating the appropriate datasets, vectorising them, adding time embeddings and then finally splitting the datasets into batches.
+Removing null values will ensure that sudden spikes in the data do not add a bias to the model. A spike will have a big derivative and might cause the wrong neurons to be activated.
+Normalising a dataset will ensure that all the data lies within 0n1. It is required as my data have different ranges. Having all values between the same range is needed to make sure larger values in a dataset don't have a greater importance/bias. This will help speed up the model as the calculations and multiplication will be done with smaller numbers. Rounding is acceptable as we are dealing with a machine learning model and not a statistical learning model. Rounding will not have a significant impact on the overall accuracy.
+The dataset has to be split into 3 parts: the training dataset, the validation dataset and the testing dataset. The split will be roughly 80:5:15. It is important to make sure that the training data is not used when testing as this will give us an hyperinflated accuracy, making the model seem a lot better than it actually is.
+The datasets then have to be vectorised as the model will only take in vectors, matrices or tensors.
+Time embeddings are added to the data. This is to help the attention part of the model. Attention works by referring back to the previous data points and so each data point has to be given a time stamp/embedding.
+The positional encoder will assign data points a value to determine their position in the dataset. This is also used to help make sure the attention module works,
+The dataset will finally be split up into batches. This is so that I can conduct batch training. This helps the model focus on small sections of the data instead of trying to consider all the data at once. This helps the code be more memory efficient and will lead to a higher accuracy score.
+
 \clearpage
 \begin{figure}[ht]
     \centering
     \includegraphics[scale = 0.5]{hd6}
     \caption{}
 \end{figure}
+The figure above shows how the attention mechanism works. The module takes in 3 input vectors: Query, Key and Value. These are fed into the attention block and an Attention score is calculated using the equation detailed in the analysis section. The multiple linear and attention score blocks represent the number of heads in the attention block.
 \begin{figure}[ht]
     \centering
     \includegraphics[scale = 0.15]{hd7}
     \caption{}
 \end{figure}
+Above is a flowchart to show the travel of data in my program. The TFT module starts off with the quantile loss and ends with the output layer.
+The logging metric is going to be in the form of a tensorboard. This tracks important data such as the change in loss as the number of epochs increases. I can track and see the change in weights through the neural network. This helps me evaluate the performance of certain blocks in the TFT. The tensorboard will also allow me to compare different initialisation techniques such as truncated and xavier. The most important reason is to find out when to stop training the model. The graph of loss vs epoch can be thought of as a 1x graph for 0x. As the graph starts to level off, the net effect of each epoch decreases. Training a machine learning algorithm is time, space and cost intensive so any effort to reduce the number of epochs has to be taken. Analysing the graph provided by the tensorboard will allow this.
+The main part of the machine learning model(TFT) aims to pass the data through many blocks that will analyse the overall trend in the data while observing patterns in the data. The use of LSTMs and Gated Residual Units contain memory blocks that help the neural network consider context. At the start there are encoders and so therefore later on decoders are required. Multihead attention is used later on to use attention to provide further context to the model.
+
 \begin{figure}[ht]
     \centering
     \includegraphics[scale = 0.6]{hd8}
@@ -694,7 +714,7 @@ Multi-head attention
 \end{figure}
 \begin{figure}[ht]
     \centering
-    \includegraphics[scale = 0.2]{backprop1}
+    \includegraphics[scale = 0.24]{backprop1}
     \caption{}
 \end{figure}
 \begin{figure}[ht]
@@ -1182,13 +1202,66 @@ it is hard to parallise batch-normalised models. The dependancy between all the 
  mathematical complexity and intensities. Layer normalisation provides some degree of
  normalisation while not needing a dependancy on other elements making it more suitable
  for my model.
- \clearpage
+\subsubsection{Code}
+\begin{lstlisting}
+def ln(input, s, b, epsilon = 1e-5, max = 1000):
+    """ Layer normalizes a 2D tensor along its second axis, which corresponds to batch """
+    m, v = tf.nn.moments(input, [1], keep_dims=True)
+    normalised_input = (input - m) / tf.sqrt(v + epsilon)
+    return normalised_input * s + b
+\end{lstlisting}
+\clearpage
+
+
+
+
+
+\subsection{Time Distributed}
+
+
+
+
+
+\subsection{Acivation Functions}
+The use of activation functions has been explained in the analysis. This section
+aims to provide a further understanding of how the functions are being coded and
+optimisation techniques I have uncovered in the process.
+\begin{lstlisting}
+DEFINE CLASS Sigmoid:
+
+    DEFINE FUNCTION sigmoid_func(x):
+        RETURN 1 / (1 + e^-x)
+
+    DEFINE FUNCTION sigmoid_derivative(x):
+        SET func_x TO sigmoid_func(x)
+        RETURN func_x * (1 - func_x)
+
+    DEFINE FUNCTION sigmoid_second_derivative(x):
+        SET fn_x TO fn(x)
+        RETURN fn_x * (1 - fn_x) * (1 - 2 * fn_x)
+\end{lstlisting}
+
+
+
+
+
 \subsection{Data Structures}
 The data is initially stored in a CSV file. The data is then converted into a 2x1 matrix before it is turned into a 2x2 matrix. These are implemented using lists in python. The data, as it goes through the model, gets converted into tensors.
 The attention module is modelled using dictionaries.
 My weights will also be stored in tensors.
 Derivatives will be stored in a Jacobian matrix.
 \clearpage
+
+
+
+
+
+
+
+
+
+
+
 \subsection{File Structure}
 Data
 \begin{itemize}
