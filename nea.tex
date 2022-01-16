@@ -1162,6 +1162,20 @@ class Dense_Network:
 
 \clearpage
 
+
+\subsection{Weight Initialisation}
+
+\begin{algorithm}
+\caption{Xavr}
+\begin{algorithmic}[0]
+\While{not Stop-Criterion do:}
+    \For{all i, j do:}
+        \State{$w_{i,j}$ = $w_{i,j}$ - $\alpha*\frac{\partial{Error}}{\partial{w_{i,j}}}}
+    \EndFor
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
 \subsection{Layer Normalisation}
 
 \subsubsection{The need for normalisation}
@@ -1193,7 +1207,7 @@ $$\sigma_i^2 = \frac{1}{K}\sum^K_{k=1}(x_{i,k}-\mu_i)^2$$
 Each sample is then normalised arounf a zero mean and unit variance. $\epsilon$ has been used for numerical stability incase the denominator becomes zero.
 $$\hat{x_i},k= \frac{x_{i,k}-\mu_i}{\sqrt{\sigma_i^2+\epsilon}}$$
 Scaling and shfiting is then finally done using $\gamma$ and $\beta$ which are learnable parameters.
-$$y_i = \gamma \hat{x_i}+\beta \equiv LN_{\gamma,\beta}(x_i)$$
+$ey_i = \gamma \hat{x_i}+\beta \equiv LN_{\gamma,\beta}(x_i)$$
 The maths above shows how this normalisation technique has no dependancy on other samples in the batch.
 \subsubsection{Batch normalisation vs layer normalisation}
 Batch normaltion has a few issues that are key to training a TFT. One of which is that
@@ -1217,7 +1231,7 @@ def ln(input, s, b, epsilon = 1e-5, max = 1000):
 
 
 \subsection{Time Distributed}
-
+Time Distributed
 
 
 
@@ -1226,6 +1240,7 @@ def ln(input, s, b, epsilon = 1e-5, max = 1000):
 The use of activation functions has been explained in the analysis. This section
 aims to provide a further understanding of how the functions are being coded and
 optimisation techniques I have uncovered in the process.
+\subsubsection{Sigmoid}
 \begin{lstlisting}
 DEFINE CLASS Sigmoid:
 
@@ -1240,7 +1255,12 @@ DEFINE CLASS Sigmoid:
         SET fn_x TO fn(x)
         RETURN fn_x * (1 - fn_x) * (1 - 2 * fn_x)
 \end{lstlisting}
-
+\subsubsection{Softmax}
+The softmax function
+\subsubsection{Tanh}
+Here I am able to use the sigmoid definition to generate the first and second
+derivatives. I can also use these defitions to form the tanh function.
+\subsubsection{ELU}
 
 
 
