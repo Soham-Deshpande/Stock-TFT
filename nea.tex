@@ -40,7 +40,8 @@
 \maketitle
 \subsection*{A Technical Indicator for  liquid asset evaluation using machine learning techniques }
 \clearpage
-\section{Contents}
+\tableofcontents
+
 \clearpage
 
 \section {Introduction to the Stock Market}
@@ -479,7 +480,7 @@ Given a tensor, two independent convolutions are done and we get two outputs. We
 \subsection{Gated Residual Network(GRN)}
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.15]{grn}
+    \includegraphics[scale=0.45]{grn}
     \caption{GRN visualised}
 \end{figure}
 
@@ -492,7 +493,7 @@ $$\phi_1,\phi_2\in R $$
 \subsection{Variable Selection Network}
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.15]{vsn}}
+    \includegraphics[scale=0.45]{vsn}}
     \caption{Variable Selection Network visualised}
 \end{figure}
 
@@ -725,7 +726,6 @@ The main part of the machine learning model(TFT) aims to pass the data through m
 
 
 \clearpage
-IMAGES GO HERE, add later
 
 
 The TFT can be modelled using the structure below. This shows the flow of data through one epoch of the network.  Each module has the dimensions, input features, output features, activation functions and learning rate specified.
@@ -1164,12 +1164,38 @@ class Dense_Network:
 
 
 \subsection{Weight Initialisation}
+\subsubsection{Theory}
+Weight initialisation is essential when training a neural network. This process prevents
+activation functions from exploding or vanishing when executing a forward pass. If the weights are too large, the variance of the input data tends to increase rapidly with each pass, eventually
+getting to a point where the derivative tends to 0. This is why it is important to initialise the network with the right weights. The range in which the it is initialised will be governed using a technique called Xavier initialisation.\\
+Xavier works by assigning the weights from a Gaussian distribution
+Consider a distrubtion with mean 0 and some finite variance as well as a linear neuron: $$y = w_1x_1 + w_2x_2 + ... + b$$
+With each forward pass we would like the variance to reamin the same.
+Let's first copmuter the variance of y:
+$$var(y) = var(w_1x_1 + w_2x_2 + ...+w_nx_n + b)$$
+Let's computer the variance of the terms inside the brackets as well. Considering the general term would give us:
+$$var(w_ix_i) = E(x_i)^2var(w_i) + E(w_i)^2var(x_i) + var(w_i)var(x_i)$$
+Where E() represents the expecation of a given variable. The assumption that the inputs and weights are generated from a Gaussian distrubtion with a mean 0 allows us to ignore the expecations, giving us:
+$$var(w_ix_i) = var(w_i)var(x_i) $$
+Substiuting this value back into our original equation gives us:
+$$var(y) = var(w_1)var(x_1)+ ... + var(w_n)var(x_n)$$
+As these are distributed identically, they can be written as:
+$$var(y) = N \times var(w_i) \times var(x_i)$$
+If we want the variance of y to be the same as x, we should set $N\times var(w_i) = 1$, giving us:
+$var(w_i) = \frac{1}{N}$
+\\This leaves us with the final formula:
+$$var(w_i) = \frac{1}{N_{avg}}$$
+where $$N_{avg} = \frac{(N_{in} + N_{out})}{2}$$
+The average helps preserve the backpropagated signal but is more copmutationally complex to implement.
+
+
 
 \begin{algorithm}
-\caption{Xavr}
+\caption{Using Xaviar}
 \begin{algorithmic}[0]
-\While{not Stop-Criterion do:}
-    \For{all i, j do:}
+\State{Initialise weights using Xavier}
+\While{not Stop-Criterion}
+    \For{all i, j}
         \State{$w_{i,j}$ = $w_{i,j}$ - $\alpha*\frac{\partial{Error}}{\partial{w_{i,j}}}}
     \EndFor
 \EndWhile
@@ -1207,7 +1233,7 @@ $$\sigma_i^2 = \frac{1}{K}\sum^K_{k=1}(x_{i,k}-\mu_i)^2$$
 Each sample is then normalised arounf a zero mean and unit variance. $\epsilon$ has been used for numerical stability incase the denominator becomes zero.
 $$\hat{x_i},k= \frac{x_{i,k}-\mu_i}{\sqrt{\sigma_i^2+\epsilon}}$$
 Scaling and shfiting is then finally done using $\gamma$ and $\beta$ which are learnable parameters.
-$ey_i = \gamma \hat{x_i}+\beta \equiv LN_{\gamma,\beta}(x_i)$$
+$$ey_i = \gamma \hat{x_i}+\beta \equiv LN_{\gamma,\beta}(x_i)$$
 The maths above shows how this normalisation technique has no dependancy on other samples in the batch.
 \subsubsection{Batch normalisation vs layer normalisation}
 Batch normaltion has a few issues that are key to training a TFT. One of which is that
@@ -1236,7 +1262,7 @@ Time Distributed
 
 
 
-\subsection{Acivation Functions}
+\subsection{Activation Functions}
 The use of activation functions has been explained in the analysis. This section
 aims to provide a further understanding of how the functions are being coded and
 optimisation techniques I have uncovered in the process.
@@ -1312,6 +1338,38 @@ Modules
 \item Quantile Forecasts
 \item Model Tuning
 \end{itemize}
+
+
+
+\clearpage
+\section{Bibliography}
+\\
+\\
+Zolkepli, H. and Divino, A., n.d. huseinzol05/Stock-Prediction-Models. [online] GitHub. Available at: <https://github.com/huseinzol05/Stock-Prediction-Models> [Accessed 7 February 2021].
+\\
+\\Intuitive Understanding of Attention Mechanism in Deep Learning. [online] Medium. Available at: <https://towardsdatascience.com/intuitive-understanding-of-attention-mechanism-in-deep-learning-6c9482aecf4f> [Accessed 5 February 2021].
+\\\\
+Biswal, A., 2021. Recurrent Neural Network (RNN) Tutorial for Beginners. [online] Simplilearn.com. Available at: <https://www.simplilearn.com/tutorials/deep-learning-tutorial/rnn> [Accessed 7 February 2021].
+\\\\
+Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A., Kaiser∗, Ł. and Polosukhin, I., 2017. Attention Is All You Need.
+\\\\
+Alammar, J., 2020. The Illustrated Transformer. [online] Jalammar.github.io. Available at: <http://jalammar.github.io/illustrated-transformer/> [Accessed 7 February 2021].
+((Alammar, 2020))
+\\
+\\Heicht-Nielsen, R., 1988. Theory of the Backpropagation Neural Network. University of California at San Diego.
+\\\\
+Hyndman, R. and Athanasopoulos, G., 2018. Forecasting principles and practice.
+\\\\
+Rojas, R., 1996. Neural Networks.
+\\\\
+Jadiker.github.io. 2018. [online] Available at: <https://jadiker.github.io/dreu-2018/backprop_math.pdf> [Accessed 11 February 2021].
+\\\\
+Lim, B., 2020. Deep Learning for Time Series Prediction & Decision Making Over Time. DPhil. University of Oxford.< https://www.robots.ox.ac.uk/~parg/pubs/theses/bryanLim.pdf>
+\\\\
+Joshi, P., 2016. Understanding Xavier Initialization In Deep Neural Networks. [online] PERPETUAL ENIGMA. Available at: <https://prateekvjoshi.com/2016/03/29/understanding-xavier-initialization-in-deep-neural-networks/> [Accessed 16 January 2022].
+\\\\
+
+
 
 \end{document}
 
