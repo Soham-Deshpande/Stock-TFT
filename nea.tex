@@ -1259,7 +1259,27 @@ def ln(input, s, b, epsilon = 1e-5, max = 1000):
 \subsection{Time Distributed}
 Time Distributed
 
+\begin{lstlisting}
+class TimeDistributed(nn.Module):
+    def __init__(self, module, batch_first=False):
+        super(TimeDistributed, self).__init__()
+        self.module = module
+        self.batch_first = batch_first
 
+    def forward(self, x):
+        if len(x.size()) <= 2:
+            return self.module(x)
+        # Squash samples and timesteps into a single axis
+        x_reshape = x.contiguous().view(-1, x.size(-1))  # (samples * timesteps, input_size)
+        y = self.module(x_reshape)
+        # We have to reshape Y
+        if self.batch_first:
+            y = y.contiguous().view(x.size(0), -1, y.size(-1))  # (samples, timesteps, output_size)
+        else:
+            y = y.view(-1, x.size(1), y.size(-1))  # (timesteps, samples, output_size)
+
+        return y
+\end{lstlisting}
 
 
 \subsection{Activation Functions}
@@ -1268,26 +1288,85 @@ aims to provide a further understanding of how the functions are being coded and
 optimisation techniques I have uncovered in the process.
 \subsubsection{Sigmoid}
 \begin{lstlisting}
-DEFINE CLASS Sigmoid:
+class Sigmoid:
+    def __int__(self):
+        super().__init__()
 
-    DEFINE FUNCTION sigmoid_func(x):
-        RETURN 1 / (1 + e^-x)
+    def sigmoid_func(self, x):
+        return 1 / (1 + np.exp(-x))  # Calculates the sigmoid r
 
-    DEFINE FUNCTION sigmoid_derivative(x):
-        SET func_x TO sigmoid_func(x)
-        RETURN func_x * (1 - func_x)
+    def sigmoid_derivative(self, x):
+        func_x = self.sigmoid_func(x)
 
-    DEFINE FUNCTION sigmoid_second_derivative(x):
-        SET fn_x TO fn(x)
-        RETURN fn_x * (1 - fn_x) * (1 - 2 * fn_x)
+        return func_x * (1 - func_x)
+
+    def sigmoid_second_derivative(self, x):
+        fn_x = self.fn(x)
+        return fn_x * (1 - fn_x) * (1 - 2 * fn_x)
+
 \end{lstlisting}
 \subsubsection{Softmax}
 The softmax function
-\subsubsection{Tanh}
-Here I am able to use the sigmoid definition to generate the first and second
-derivatives. I can also use these defitions to form the tanh function.
-\subsubsection{ELU}
 
+
+\begin{lstlisting}
+class Softmax():
+    def __int__(self):
+        super().__init__()
+
+    def softmax(self, z):
+        assert len(z.shape) == 2
+        s = np.max(z, axis=1)
+        s = s[:, np.newaxis]  # necessary step to do broadcasting
+        e_x = np.exp(z - s)
+        div = np.sum(e_x, axis=1)
+        div = div[:, np.newaxis] # dito
+        return e_x / div
+\end{lstlisting}
+
+
+\subsubsection{Tanh}
+Here I am able to use the sinh definition to generate the first and second
+derivatives. I can also use these defitions to form the tanh function.
+
+
+\begin{lstlisting}
+class Sinh:
+    def __init__(self):
+        super().__init__()
+
+    def sinh(self,x):
+        #doublesinh = np.exp(x) – np.exp(-x)
+        comp1 = np.exp(x)
+        comp2 = np.exp(-x)
+        comp3 = 0.5 * (comp1-comp2)
+        return comp3
+
+    def sinh_deriv(self,x):
+        # doublesinh = np.exp(x) – np.exp(-x)
+        comp1 = np.exp(x)
+        comp2 = np.exp(-x)
+        final = 0.5 * (comp1 + comp2)
+        return final
+
+x = Sinh()
+const = 1
+tanh = (x.sinh(const))/(x.sinh_deriv(const))
+\end{lstlisting}
+
+
+\subsubsection{ELU}
+\begin{lstlisting}
+class ELU:
+    def __init__(self):
+        super().__init__()
+
+    def elu(self, z, alpha):
+        return z if z >= 0 else alpha * (np.exp(z) - 1)
+
+    def elu_deriv(self, z, alpha):
+        return 1 if z > 0 else alpha * np.exp(z)
+\end{lstlisting}
 
 
 
@@ -1348,11 +1427,13 @@ Modules
 Zolkepli, H. and Divino, A., n.d. huseinzol05/Stock-Prediction-Models. [online] GitHub. Available at: <https://github.com/huseinzol05/Stock-Prediction-Models> [Accessed 7 February 2021].
 \\
 \\Intuitive Understanding of Attention Mechanism in Deep Learning. [online] Medium. Available at: <https://towardsdatascience.com/intuitive-understanding-of-attention-mechanism-in-deep-learning-6c9482aecf4f> [Accessed 5 February 2021].
-\\\\
+\\
+\\
 Biswal, A., 2021. Recurrent Neural Network (RNN) Tutorial for Beginners. [online] Simplilearn.com. Available at: <https://www.simplilearn.com/tutorials/deep-learning-tutorial/rnn> [Accessed 7 February 2021].
-\\\\
+\\
 Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A., Kaiser∗, Ł. and Polosukhin, I., 2017. Attention Is All You Need.
-\\\\
+\\
+\\
 Alammar, J., 2020. The Illustrated Transformer. [online] Jalammar.github.io. Available at: <http://jalammar.github.io/illustrated-transformer/> [Accessed 7 February 2021].
 ((Alammar, 2020))
 \\
