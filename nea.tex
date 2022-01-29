@@ -9,6 +9,8 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{algpseudocode}
+\usepackage[backend=biber, style=verbose]{biblatex}
+\addbibresource{/home/Documents/PycharmProjects/NEA/references.bib}
 \graphicspath{{/home/soham/Desktop/NEAlatex/images/}}
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -1369,6 +1371,10 @@ class ELU:
 \end{lstlisting}
 
 
+\subsection{Attention}
+\subsubsection{Multi-head attention}
+This is a test
+
 
 \subsection{Data Structures}
 The data is initially stored in a CSV file. The data is then converted into a 2x1 matrix before it is turned into a 2x2 matrix. These are implemented using lists in python. The data, as it goes through the model, gets converted into tensors.
@@ -1451,6 +1457,10 @@ Joshi, P., 2016. Understanding Xavier Initialization In Deep Neural Networks. [o
 \\\\
 
 
+\clearpage
+here is some text
+\printbibliography
+\addcontentsline{toc}{section}{References}
 
 \end{document}
 
