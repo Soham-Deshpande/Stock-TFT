@@ -159,7 +159,7 @@ The most common activation functions are shown below along with their equation.
     \item Tanh
         \begin{itemize}
         \item $tanh(x) = 2\sigma(2x)-1$
-        \itme Values range from -1 to 1
+        \item Values range from -1 to 1
         \end{itemize}
         \begin{figure}[h!]
             \centering
@@ -213,7 +213,10 @@ Here is an example of the function
 $\sum_{j=1}^{k}{e^{z_j}}$ is the term on the bottom of the formula is the normalization term. It ensures that all the output values of the function will sum to 1 and each be in the range (0, 1), thus constituting a valid probability distribution.\\
         $k$ is the number of classes in the multi-class classifier.
 \end{itemize}
+\begin{itemize}
 \item ELU(Exponential linear unit)\\
+
+\end{itemize}
 The exponential linear unit was designed to fix some of the problems with ReLUs. This function has a parameter that is picked; a common value is between 0.1 and 0.3.
 \begin{equation*}
             ELU(x) = 	x \mbox{ if }  x > 0 \mbox{ or } \alpha(e^{x}-1)  \mbox{ if } x <  0
@@ -286,7 +289,7 @@ $$new\hspace{3}w_n = (old\hspace{3} w_n) - \alpha \cdot \frac{\partial C}{\parti
 \subsection{Backpropagation}
 The goal of backpropagation is to minimise the error function by changing the weights of the individual neurons. The formulation of the complete backpropagation algorithm can be proven by induction to show that it works with differentiable activation functions at its nodes.
 \\
-For this proof, the assumption has been made that the neural network is one with a single input and single output. To simplify the proof, instead of carrying a bias term, let us assume that each layer $V^{(t)}$ contains a single neuron $v_o^{(t)}$ that always outputs a constant 1 thus the output of a neuron is given by $$\sigma(\sumw_{i,j}v_j^{t-1})$$ We next wish to compute the derivative $\nabla f_w$. Now suppose neuron $v_i^{t}$ computes:
+For this proof, the assumption has been made that the neural network is one with a single input and single output. To simplify the proof, instead of carrying a bias term, let us assume that each layer $V^{(t)}$ contains a single neuron $v_o^{(t)}$ that always outputs a constant 1 thus the output of a neuron is given by $$\sigma(\sum w_{i,j}v_j^{t-1})$$ We next wish to compute the derivative $\nabla f_w$. Now suppose neuron $v_i^{t}$ computes:
 $$v_i^t(x) = \sigma(u_i^t(x))$$
 Then using the chain rule we can obtain that\\
 $$\frac{\partial f}{\partial w_{i,j}} = \frac{\partial f}{\partial u_i^t}\cdot \frac{\partial u_i^t}{\partial f} = \frac{\partial f}{\partial u_i^t}v_i^{(t-1)}(x)$$\\

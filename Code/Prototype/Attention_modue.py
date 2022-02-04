@@ -11,26 +11,18 @@ class MultiHeadAttention(nn.Module):
         super(MultiHeadAttention, self).__init__(**kwargs)
         self.num_heads = num_heads
         self.attention = d2l.DotProductAttention(dropout)
-        self.W_q = nn.Linear(query_size, num_hiddens, bias=bias)
-        self.W_k = nn.Linear(key_size, num_hiddens, bias=bias)
-        self.W_v = nn.Linear(value_size, num_hiddens, bias=bias)
+        self.W_q = nn.Linear(query_size, num_hiddens, bias=bias)#define query vector
+        self.W_k = nn.Linear(key_size, num_hiddens, bias=bias)#define key vector
+        self.W_v = nn.Linear(value_size, num_hiddens, bias=bias)#define value vector
         self.W_o = nn.Linear(num_hiddens, num_hiddens, bias=bias)
 
     def forward(self, queries, keys, values, valid_lens):
-        # Shape of `queries`, `keys`, or `values`:
-        # (`batch_size`, no. of queries or key-value pairs, `num_hiddens`)
-        # Shape of `valid_lens`:
-        # (`batch_size`,) or (`batch_size`, no. of queries)
-        # After transposing, shape of output `queries`, `keys`, or `values`:
-        # (`batch_size` * `num_heads`, no. of queries or key-value pairs,
-        # `num_hiddens` / `num_heads`)
         queries = transpose_qkv(self.W_q(queries), self.num_heads)
         keys = transpose_qkv(self.W_k(keys), self.num_heads)
         values = transpose_qkv(self.W_v(values), self.num_heads)
 
         if valid_lens is not None:
-            # On axis 0, copy the first item (scalar or vector) for
-            # `num_heads` times, then copy the next item, and so on
+            #repeats elements in the tensor
             valid_lens = torch.repeat_interleave(
                 valid_lens, repeats=self.num_heads, dim=0)
 
@@ -66,7 +58,6 @@ class MultiHeadAttention(nn.Module):
         return X.reshape(-1, X.shape[2], X.shape[3])
 
 
-#@save
     def transpose_output(X, num_heads):
         """Reverse the operation of `transpose_qkv`."""
         X = X.reshape(-1, num_heads, X.shape[1], X.shape[2])
@@ -74,4 +65,3 @@ class MultiHeadAttention(nn.Module):
         return X.reshape(X.shape[0], X.shape[1], -1)
 
 
-#test comment

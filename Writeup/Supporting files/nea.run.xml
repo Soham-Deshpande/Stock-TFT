@@ -80,7 +80,7 @@
       <file>nea.bcf</file>
     </requires>
     <requires type="editable">
-      <file>references.bib</file>
+      <file>/home/Documents/PycharmProjects/NEA/references.bib</file>
     </requires>
   </external>
 </requests>
