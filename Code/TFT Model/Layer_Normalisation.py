@@ -1,0 +1,7 @@
+"""
+addition and normalisation layer
+
+"""
+
+
+
