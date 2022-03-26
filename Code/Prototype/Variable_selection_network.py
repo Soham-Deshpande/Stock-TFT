@@ -11,7 +11,8 @@
 
 from imports import *
 from GRN import *
-
+import torch
+import torch.nn as nn
 class VariableSelectionNetwork:
 
     """
@@ -69,11 +70,4 @@ class VariableSelectionNetwork:
         return combined, sparse_weights
 
 
-x = VariableSelectionNetwork(2,4,4,0.2)
-print(x.transformed_inputs)
-list = [0.6614,  0.2669]
-import torch
-tensor = torch.Tensor(list)
-print(tensor.type())
-print(x.forward(tensor))
 

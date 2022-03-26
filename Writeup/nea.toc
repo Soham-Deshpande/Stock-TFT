@@ -1,0 +1,121 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1}Introduction to the Stock Market}{4}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.1}Abstract}{4}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2}Introduction}{4}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3}Analysis}{4}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.1}Stock prediction techniques}{4}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2}ARIMA}{5}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3}Neural Networks}{6}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.4}CNN}{6}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.5}Activation Functions}{7}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.6}Layers}{11}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.7}Neurons and Equations}{11}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.8}Loss Functions}{12}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.9}Feed Forward and Back propagation}{12}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.10}Backpropagation}{14}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.11}RNN}{15}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.11.1}Problems with RNN}{16}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.12}LSTM}{16}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.12.1}Problems with LSTM}{17}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.13}Transformers}{17}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.14}Attention}{18}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.15}Temporal Fusion Transformers}{20}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.16}Tensors}{20}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.16.1}Tensor Product}{21}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.17}Gated Linear Units(GLU)}{21}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.18}Gated Residual Network(GRN)}{21}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.19}Variable Selection Network}{22}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.20}Multi-head attention}{22}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.21}Quantile Forecasts}{23}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.22}Software}{23}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.22.1}Coding Language}{23}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.22.2}Packages}{25}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.23}Objectives}{25}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.23.1}General Objectives}{25}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.23.2}Specific objectives}{26}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4}Documented Design}{28}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.0.1}Heirarchy Diagram}{28}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.1}Explaining nn.module}{42}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2}Positional Encoding}{45}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.3}Backpropagation}{47}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.4}Dense Network}{49}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.5}Weight Initialisation}{50}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.5.1}Theory}{50}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.6}Layer Normalisation}{51}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.6.1}The need for normalisation}{51}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.6.2}Layer Normalisation}{51}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.6.3}Batch normalisation vs layer normalisation}{52}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.6.4}Code}{52}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.7}Time Distributed}{53}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.8}Activation Functions}{53}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.8.1}Sigmoid}{53}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.8.2}Softmax}{54}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.8.3}Tanh}{54}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.8.4}ELU}{55}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.9}Attention}{55}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.9.1}Multi-head attention}{55}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.10}Data Structures}{57}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.11}Testing}{58}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.12}File Structure}{58}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5}Bibliography}{59}{}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{References}{60}{}%

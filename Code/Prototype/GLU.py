@@ -8,10 +8,19 @@
 #
 #
 # ----------------------------------------------------#
+
 from Activation_functions import Sigmoid
 from torch import nn
 
 class GLU_prototype():
+    """
+    GLU Prototype
+
+    GLU built from scratch to test funcionality and gain a deeper understanding
+    of the system
+
+
+    """
     def __init__(self, input_size,output_size):
         super().__init__()
 
@@ -30,10 +39,12 @@ class GLU_prototype():
 class GLU(nn.Module):
     """
     Gated Linear Unit
+
     GLU(x,y) = multiply(x, sigmoid(y))
 
     Args:
-        int input size: defines the size of the input matrix and output size of the gate
+        int input size: Defines the size of the input matrix and output size of
+        the gate
 
     """
 
@@ -50,7 +61,7 @@ class GLU(nn.Module):
     def forward(self,a):
         """
         Args:
-            tensor a: tensor that passes through the gate
+            float(tensor) a: Tensor that passes through the gate
 
         """
         gate = self.sigmoid(self.y(x))

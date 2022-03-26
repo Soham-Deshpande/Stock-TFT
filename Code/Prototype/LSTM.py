@@ -21,7 +21,7 @@ class LSTM(nn.Module):
     """
     Long-Short Term Memory
 
-    h(t) = tanh(s)*sigma(b+sum{U*x}+sum{W*h})
+    LSTM(t) = tanh(s)*sigma(b+sum{U*x}+sum{W*h})
 
     Args:
         int num_classes = number of classes
@@ -31,7 +31,8 @@ class LSTM(nn.Module):
         int seq_length  = sequence length
 
     """
-    def __init__(self, num_classes, input_size, hidden_size, num_layers, seq_length):
+    def __init__(self, num_classes, input_size, hidden_size, num_layers,
+            seq_length):
         super(LSTM, self).__init__()
         self.num_classes = num_classes
         self.num_layers = num_layers
@@ -47,11 +48,15 @@ class LSTM(nn.Module):
         self.relu = nn.ReLU()
 
     def forward(self,x):
-        h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size)) #hidden state
-        c_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size)) #internal state
+        h_0 = Variable(torch.zeros(self.num_layers, x.size(0),
+            self.hidden_size)) #hidden state
+        c_0 = Variable(torch.zeros(self.num_layers, x.size(0),
+            self.hidden_size)) #internal state
         # Propagate input through LSTM
-        output, (hn, cn) = self.lstm(x, (h_0, c_0)) #lstm with input, hidden, and internal state
-        hn = hn.view(-1, self.hidden_size) #reshaping the data for Dense layer next
+        output, (hn, cn) = self.lstm(x, (h_0, c_0)) #lstm with input,
+        # hidden, and internal state
+        hn = hn.view(-1, self.hidden_size) #reshaping the data for
+        # Dense layer next
         out = self.relu(hn)
         out = self.fc_1(out) #first Dense
         out = self.relu(out) #relu
@@ -65,7 +70,7 @@ class LSTM(nn.Module):
 
 
 
-
+#Vanilla  LSTM :
 
 INPUT = 28
 HIDDEN = 128
@@ -87,10 +92,14 @@ PLOT_ITER = ITER_NUM // 200
 #print(tanh)
 
 
+class Test_LSTM:
+    """
+    Basic Vanilla LSTM from scratch to test functionality and to help
+    with understanding
 
-class LSTM_prototype:
-
-    def __init__(self, input, hidden, output, alpha, batch_size, iter_num, log_iter, plot_iter):
+    """
+    def __init__(self, input, hidden, output, alpha, batch_size, iter_num,
+            log_iter, plot_iter):
         self.input = input
         self.hidden = hidden
         self.output = output
@@ -104,6 +113,12 @@ class LSTM_prototype:
        # self.softmax
 
     def weights_biases(self, input, hidden):
+        """
+        Setting up neurons and weights
+
+        wf = weight for neuron f
+        bf = bias for neuron f
+        """
         wf, wi, wc, wo, wy = 0
         dwf, dwi, dwc, dwo, dwy = 0
 
@@ -131,7 +146,8 @@ class LSTM_prototype:
         batch_num = input_val.shape[1]
 
         caches = []
-        states = [[np.zeros([batch_num, self.hidden]), np.zeros([batch_num, self.hidden])]]
+        states = [[np.zeros([batch_num, self.hidden]),
+            np.zeros([batch_num, self.hidden])]]
 
         for x in input_val:
             c_prev, h_prev = states[-1]
@@ -151,7 +167,11 @@ class LSTM_prototype:
         return caches, states
 
     def backpropogation(self, caches, states):
+        """
+        Backpropagation algorithm
 
+        Refer to write up for algorithm with relevant proofs
+        """
         for i in range(ITER_NUM + 1):
             X, Y = iterator.get_next()
             Y = tf.one_hot(Y, 10)

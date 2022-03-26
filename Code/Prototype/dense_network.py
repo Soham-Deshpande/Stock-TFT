@@ -15,6 +15,21 @@
 import numpy as np
 
 class Dense_Network:
+
+    """
+    Dense block
+
+    Refer to write up for explanation of this module
+
+    Args:
+        int input_shape : Size of input tensor
+        int output_shape: Size of output tensor
+        float activation: Activation function to be used
+        float biases    : Bias values for each neuron
+        float input     : Input values
+        float output    : Output values
+
+    """
     def __init__(self, input_shape, output_shape, activation, weights, biases):
         self.input_shape = input_shape
         self.output_shape = output_shape
@@ -46,15 +61,6 @@ class Dense_Network:
 
 
 
-x = np.array([[1,2,3],[4,5,6]])
 
 
-nn = Dense_Network(x, (2, 2), np.tanh, np.random.randn(2, 3), np.random.randn(2, 1))
-
-for i in range(90):
-    nn.forward_pass(x)
-    nn.backward_pass(np.array([[1, 1], [1, 1]]))
-    nn.update_weights(0.01)
-    print(nn.output)
-    print(nn.weights)
 

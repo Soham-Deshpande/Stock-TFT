@@ -1,17 +1,32 @@
-# All Activation Functions here
-import numpy as np
+# ---------------------------------------------------#
 #
+#   File       : Activation_Functions.py
+#   Author     : Soham Deshpande
+#   Date       : June 2021
+#   Description: All activation functions needed
+#
+#
+#
+# ----------------------------------------------------#
 
-# sigmoid function
+import numpy as np
 # refer to write up for graph vs computing values
 # refer to write up for maths and derivation
 
 class Sigmoid:
+    """
+    Sigmoid Activation Function
+
+    Sigmoid(x) = \frac{1}{1+e^{-x}}
+
+    Takes neuron value as an input. Values afetr a certain value will result
+    in the neuron activating.
+
+    """
     def __int__(self):
         super().__init__()
 
     def sigmoid_func(self, x):
-        # print('The sigmoid derivative not working anymore also ~Soham'), thank you michau
         return 1 / (1 + np.exp(-x))  # Calculates the sigmoid r
 
     def sigmoid_derivative(self, x):
@@ -25,6 +40,14 @@ class Sigmoid:
 
 
 class Softmax:
+    """
+    Probabilistic Activation Function
+
+    Softmax(x) = \sigma(\hat{z})_i = \frac{e^{zi}}{\sum_{j=1}^{k}e^{z_j}}
+
+    Takes neuron value as an input. Values afetr a certain value will result
+    in the neuron activating.
+    """
     def __init__(self):
         super().__init__()
 
@@ -40,6 +63,14 @@ class Softmax:
 
 
 class ELU:
+    """
+    Exponential Linear Unit
+
+    ELU(x) = x \mbox{ if } x > 0 \mbox{ or } \alpha(e^{x}-1) \mbox{ if } x <  0
+
+    Takes neuron value as an input. Values afetr a certain value will result
+    in the neuron activating.
+    """
     def __init__(self):
         super().__init__()
 
@@ -51,6 +82,14 @@ class ELU:
 
 
 class Sinh:
+    """
+    Sinh Activation Function
+
+    Sinh(x) = \frac{e^{x} - e^{-x}}{2}
+
+    Takes neuron value as an input. Values afetr a certain value will result
+    in the neuron activating.
+    """
     def __init__(self):
         super().__init__()
 

@@ -15,6 +15,14 @@ import torch.nn as nn
 
 
 class TimeDistributed(nn.Module):
+    """
+    Similar to the Temporal layer, this is another way to add a module that
+    is applied to each every temporal slice of an input in each layer
+
+    float module : Tensor with the values from the layer
+    float y      : Tensor which is the layer
+
+    """
     def __init__(self, module, batch_first=False):
         super(TimeDistributed, self).__init__()
         self.module = module

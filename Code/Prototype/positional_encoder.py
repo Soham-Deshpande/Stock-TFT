@@ -1,4 +1,14 @@
-#positional encoding
+#----------------------------------------------------#
+#
+#   File       : Positional_Encoder.py
+#   Author     : Soham Deshpande
+#   Date       : February 2022
+#   Description: Positional Encoder
+#
+#
+#
+# ----------------------------------------------------#
+
 import torch
 import math
 
@@ -6,6 +16,9 @@ import math
 class PositionalEncoder(torch.nn.Module):
     """
     PositionalEncoder
+
+    Positional Encode to assist the time indexes when training the model
+    Refer to write up for further explanation
 
     PE(pos, 2i) = sin(pos / 10000^(2i / d_model))
     PE(pos, 2i+1) = cos(pos / 10000^(2i / d_model))
@@ -39,4 +52,4 @@ class PositionalEncoder(torch.nn.Module):
 
 
 
-PositionalEncoder = PositionalEncoder(512)
+#PositionalEncoder = PositionalEncoder(512)

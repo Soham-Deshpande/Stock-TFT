@@ -1,14 +1,30 @@
-"""
-Interpretable multihead attention
-"""
+#----------------------------------------------------#
+#
+#   File       : Attention Module.py
+#   Author     : Soham Deshpande
+#   Date       : January 2022
+#   Description: Interpretable MultiHead Attention
+#
+#
+#
+# ----------------------------------------------------#
 
 
-#@save
+import torch.nn as nn
+
 class MultiHeadAttention(nn.Module):
-    """Multi-head attention."""
+    """
+    Multi-head attention
+
+
+
+
+
+
+    """
     def __init__(self, key_size, query_size, value_size, num_hiddens,
-                 num_heads, dropout, bias=False, **kwargs):
-        super(MultiHeadAttention, self).__init__(**kwargs)
+                 num_heads, dropout, bias=False):
+        super(MultiHeadAttention, self).__init__()
         self.num_heads = num_heads
         self.attention = d2l.DotProductAttention(dropout)
         self.W_q = nn.Linear(query_size, num_hiddens, bias=bias)#define query vector
@@ -37,7 +53,6 @@ class MultiHeadAttention(nn.Module):
     #To allow for parallel computation of multiple heads, the above
     #MultiHeadAttention class uses two transposition functions as defined below.
     #Specifically, the transpose_output function reverses the operation of the transpose_qkv function.
-    #@save
     def transpose_qkv(X, num_heads):
         """Transposition for parallel computation of multiple attention heads."""
         # Shape of input `X`:
@@ -45,7 +60,7 @@ class MultiHeadAttention(nn.Module):
         # Shape of output `X`:
         # (`batch_size`, no. of queries or key-value pairs, `num_heads`,
         # `num_hiddens` / `num_heads`)
-         X = X.reshape(X.shape[0], X.shape[1], num_heads, -1)
+        X = X.reshape(X.shape[0], X.shape[1], num_heads, -1)
 
         # Shape of output `X`:
         # (`batch_size`, `num_heads`, no. of queries or key-value pairs,

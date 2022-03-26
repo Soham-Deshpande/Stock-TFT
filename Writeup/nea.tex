@@ -1376,9 +1376,79 @@ class ELU:
 
 \subsection{Attention}
 \subsubsection{Multi-head attention}
-This is a test
+Multihead attention is done by passing the output tensord through a series of functions.
+The first step is to split the tensor into its neurons. THe query and key is multiplied.
+A mask is then used before it is passed through the softmax function. Though, as
+previously discussed, the softmax is a very inefficient function, I have not been
+able to source a more efficient algorithm that also produced probabilistic outputs.
+The query vector is the masked before it is mulitplied to the attention vector.
+This is then split and normalised before returned back to the network.
+Multihead attention is a parralel task with all heads running at the same time. Bigger
+models may require 8-12 heads but for my data, 4 should be appropriate for me. This
+is because multihead attention is a polynomial space complex algorithm so each head
+will increase the memory needed polynomially. With the hardware I am operating with,
+4 will push the system but not cause problems. Larger number of heads are required when
+dealing with natural language processing. The nature of my data, time series data, means I can get away with a smaller number of heads.
+
+\begin{lstlisting}
+    def MultiHeadAttention(self,
+                Q, K, V):
+        num_heads = self.num_heads
+        N = Q.size()[0]
+        # Linear projections
+        Q_l = nn.ReLU()(self.linear_Q(Q))
+        K_l = nn.ReLU()(self.linear_K(K))
+        V_l = nn.ReLU()(self.linear_V(V))
+        # Split and concat
+        Q_split = Q_l.split(split_size=self.hidden_dim // num_heads, dim=2)
+        K_split = K_l.split(split_size=self.hidden_dim // num_heads, dim=2)
+        V_split = V_l.split(split_size=self.hidden_dim // num_heads, dim=2)
+        Q_ = torch.cat(Q_split, dim=0)  # (h*N, T_q, C/h)
+        K_ = torch.cat(K_split, dim=0)  # (h*N, T_k, C/h)
+        V_ = torch.cat(V_split, dim=0)  # (h*N, T_v, C/h)
+        # Multiplication
+        outputs = torch.bmm(Q_, K_.transpose(2, 1))
+        # Scale
+        outputs = outputs / (K_.size()[-1] ** 0.5)
+        # Key Masking
+        key_masks = torch.sign(torch.abs(K).sum(dim=-1))  # (N, T_k)
+        key_masks = key_masks.repeat(num_heads, 1)  # (h*N, T_k)
+        key_masks = key_masks.unsqueeze(1).repeat(1, Q.size()[1], 1)  # (h*N, T_q, T_k)
+        paddings = torch.ones_like(key_masks) * (-2 ** 32 + 1)
+        outputs = torch.where(torch.eq(key_masks, 0), paddings, outputs)  # (h*N, T_q, T_k)
+        # Activation
+        outputs = nn.Softmax(dim=2)(outputs)  # (h*N, T_q, T_k)
+        # Query Masking
+        query_masks = torch.sign(torch.abs(Q).sum(dim=-1))  # (N, T_q)
+        query_masks = query_masks.repeat(num_heads, 1)  # (h*N, T_q)
+        query_masks = query_masks.unsqueeze(-1).repeat(1, 1, K.size()[1])  # (h*N, T_q, T_k)
+        outputs = outputs * query_masks  # broadcasting. (h*N, T_q, T_k)
+        # Dropouts
+        outputs = self.dropout(outputs)
+        # Weighted sum
+        outputs = torch.bmm(outputs, V_)  # ( h*N, T_q, C/h)
+        # Restore shape
+        outputs = outputs.split(N, dim=0)  # (N, T_q, C)
+        outputs = torch.cat(outputs, dim=2)
+        # Residual connection
+        outputs = outputs + Q_l
+        # Normalize
+        outputs = self.norm(outputs)  # (N, T_q, C)
+        return outputs
+
+\end{lstlisting}
+\clearpage
+
+\subsection{Loss Functions}
+
+\subsubsection{Quantile Loss}
 
 
+\subsubsection{Poisson Loss}
+
+
+
+\clearpage
 \subsection{Data Structures}
 The data is initially stored in a CSV file. The data is then converted into a 2x1 matrix before it is turned into a 2x2 matrix. These are implemented using lists in python. The data, as it goes through the model, gets converted into tensors.
 The attention module is modelled using dictionaries.
@@ -1387,8 +1457,7 @@ Derivatives will be stored in a Jacobian matrix.
 \clearpage
 
 
-
-
+\subsection{Testing}
 
 
 
@@ -1427,8 +1496,21 @@ Modules
 \item Model Tuning
 \end{itemize}
 
+\section{Coding Process}
 
+After setting up a smaller TFT on a reduced dataset, errors started to reveal
+themselves. One big issue was dying neurons. Using a biological metaphor, it can be
+described as brain damage. This issue may be caused by having a model that is too
+big for the data or could be as intricate as vanishing gradient occuring in the
+activation functions.
 
+I am runnning a learning rate of 0.0005, this is based of a hyper parameter estimation
+algorithm provided by pytorch. I have a hidden size of 128 but this may change later
+on to gain a higher accuracy. The attention head size is 2 with a dropout of 0.1.
+I am using quantile loss on the model. The prediction length is 5 as I do not have
+enough ram to accommodate more. I also run the program for 150 epochs/loops with each
+epoch taking 11 minutes.
+After 5 epochs my loss of 0.00249
 \clearpage
 \section{Bibliography}
 \\

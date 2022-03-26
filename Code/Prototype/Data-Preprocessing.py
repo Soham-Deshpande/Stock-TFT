@@ -16,6 +16,11 @@ import matplotlib.pyplot as plt
 
 
 class CSVHandler:
+    """
+    Split and extract columns
+    Provide information about the data
+
+    """
     def __init__(self, filename, header):
         self.data = pd.read_csv(filename, header=header)
 
@@ -46,7 +51,11 @@ def splitcolumns(filename, headers, columns):
 
 
 class Normalise:
-    def __int__(self):
+    """
+    Normalise all the data between 0 and 1
+    Incorporate batch normalisation
+   """
+    def __init__(self):
         super().__init__()
 
     def normalise(self, rdatasplit):
@@ -75,7 +84,9 @@ class Normalise:
 
 
 def normalisedata(columnnames):
-    rdata = splitcolumns('/home/soham/Documents/PycharmProjects/NEA/Data/Testing-Data.csv', 0, columnnames)
+    rdata = splitcolumns(
+            '/home/soham/Documents/PycharmProjects/NEA/Data/Testing-Data.csv',
+            0, columnnames)
     normal = Normalise()  # rawdata
     ndata = normal.normalise(rdata)  # normalised data
     return ndata
