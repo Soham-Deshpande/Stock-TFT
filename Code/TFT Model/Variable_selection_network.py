@@ -9,7 +9,7 @@
 #
 # ----------------------------------------------------#
 
-from imports import *
+from Imports import *
 from GRN import *
 import torch
 import torch.nn as nn
@@ -67,7 +67,5 @@ class VariableSelectionNetwork:
         combined = transformed_embeddings*sparse_weights
         combined = combined.sum(axis=-1)
 
-        return combined, sparse_weights
-
-
+        return combined, sparse_weight
 

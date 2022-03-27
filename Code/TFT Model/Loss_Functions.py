@@ -10,7 +10,7 @@
 # ----------------------------------------------------#
 
 import Activation_functions
-from imports import *
+from Imports import *
 import torch
 import torch.nn as nn
 
@@ -66,7 +66,7 @@ class NormalisedQuantileLoss(nn.Module):
 
 
 
-class PossionLoss(nn.Module):
+class PoissonLoss(nn.Module):
 
     """
    Poisson Loss

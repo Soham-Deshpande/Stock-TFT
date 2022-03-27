@@ -10,8 +10,8 @@
 # ----------------------------------------------------#
 
 from Activation_functions import ELU, Sigmoid
-from imports import nn
-from TemporalLayer import *
+from Imports import nn
+from Temporal_Layer import *
 from GLU import *
 
 class GRN(nn.Module):

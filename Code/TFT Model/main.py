@@ -9,15 +9,13 @@
 from Activation_functions import *
 from  Variable_selection_network import *
 from GLU import *
-from dense_network import *
-from Attention_modue import *
-from QuantileLoss import *
-from positional_encoder import *
+from Dense_Network import *
+from Attention_module import *
+from Loss_Functions import *
+from Positional_Encoder import *
 from LSTM import *
-from TemporalLayer import *
+from Temporal_Layer import *
 from Time_Distributed import *
-from Multiheadattention import *
-from data_loaders import *
 
 
 class TemporalFusionTransformer(nn.Module):
@@ -25,9 +23,9 @@ class TemporalFusionTransformer(nn.Module):
             n_var_future_disc , dim_model, n_quantiles = 3, dropout_r = 0.1,
             n_lstm_layers = 1, n_attention_layers = 1, n_heads = 4):
 
-        super(TFN, self).__init__()
-        self.vs_past = VSN(n_var_past_cont, n_var_past_disc, dim_model, dropout_r = dropout_r)
-        self.vs_future = VSN(n_var_future_cont, n_var_future_disc, dim_model, dropout_r = dropout_r)
+        super(TemporalFusionTransformer, self).__init__()
+        self.vs_past = VariableSelectionNetwork(n_var_past_cont, n_var_past_disc, dim_model, dropout_r = dropout_r)
+        self.vs_future = VariableSelectionNetwork(n_var_future_cont, n_var_future_disc, dim_model, dropout_r = dropout_r)
 
         self.enc = LSTMLayer(dim_model, dropout_r = dropout_r, n_layers = n_lstm_layers)
         self.dec = LSTMLayer(dim_model, dropout_r = dropout_r, n_layers = n_lstm_layers)
@@ -92,3 +90,5 @@ class TemporalFusionTransformer(nn.Module):
         self.dec.reset(batch_size, gpu)
 
 
+TFT = TemporalFusionTransformer(1,1,1,1,1)
+print(TFT)
