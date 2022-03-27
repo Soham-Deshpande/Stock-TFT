@@ -1,52 +1,182 @@
+# ---------------------------------------------------#
+#
+#   File       : PytorchForecasting.py
+#   Author     : Soham Deshpande
+#   Date       : January 2022
+#   Description: Assembling and training the model
+#                using Pytorch
+#
+#
+# ----------------------------------------------------#
+
+
+#Imports
+#############################
+
+#General
+import datetime
+import time
+import pandas as pd
+import numpy as np
+import requests
+import bs4 as bs
+import os
+import pickle
+import matplotlib.pyplot as plt
+import warnings
+#Pytorch
 from pytorch_forecasting import Baseline, TemporalFusionTransformer, TimeSeriesDataSet
 import pytorch_lightning as pl
 from pytorch_forecasting.metrics import SMAPE, PoissonLoss, QuantileLoss
 from pytorch_lightning.callbacks import EarlyStopping, LearningRateMonitor
 from pytorch_lightning.loggers import TensorBoardLogger
+from pytorch_forecasting.data.encoders import NaNLabelEncoder
 import torch
-from homework.dataset.SP500ReturnsDataSet import SP500ReturnsDataSet
-import pandas as pd
+import torch.utils.data as data_utils
+from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
 
-import os
-import warnings
+##############################
 
-warnings.filterwarnings("ignore")  # avoid printing out absolute paths
 
-class TFTSP500:
+warnings.filterwarnings("ignore")  #to avoid printing out absolute paths
 
-    def __init__(self, prediction_length = 5):
-        self.prediction_length = 5
+
+class FTSEDataSet:
+    """
+    FTSE Dataset
+
+    Extracsts the data from the CSV file
+    Runs through data loaders
+    Null values are removed
+    Dataset is split into training, validation and testing datasets
+    Converted into an appropriate format for the TFT
+
+    """
+
+    def __init__(self, start=datetime.datetime(2010, 1, 1), stop=datetime.datetime.now()):
+        self.df_returns = None
+        self.stocks_file_name = "/home/soham/Documents/PycharmProjects/NEA/Code/Data/NEAFTSE2010-21.csv"
+        self.start = start
+        self.stop = stop
+
+    def load(self, binary = True):
+
+        start = self.start
+        end = self.stop
+
+        df0 = pd.read_csv(self.stocks_file_name, index_col=0, parse_dates=True)
+        print(df0)
+
+
+        df0.dropna(axis=1, how='all', inplace=True)
+        df0.dropna(axis=0, how='all', inplace=True)
+        print("Dropping columns due to nans > 50%:",
+              df0.loc[:, list((100 * (df0.isnull().sum() / len(df0.index)) > 50))].columns)# changed here
+        df0 = df0.drop(df0.loc[:, list((100 * (df0.isnull().sum() / len(df0.index)) > 50))].columns, 1)
+        df0 = df0.ffill().bfill()
+
+        print("Any columns still contain nans:", df0.isnull().values.any())
+
+        df_returns = pd.DataFrame()
+        print(df_returns)
+        for name in df0.columns:
+            df_returns[name] = np.log(df0[name]).diff()
+        print(df_returns)
+
+
+        # split into train and test
+        df_returns.dropna(axis=0, how='any', inplace=True)
+        if binary:
+            df_returns.FTSE = [1 if ftse > 0 else 0 for ftse in df_returns.FTSE]
+        self.df_returns = df_returns
+        return df_returns
+
+    def get_loaders(self, batch_size=16, n_test=1000, device='cpu'):
+        if self.df_returns is None:
+            self.load()
+
+        features = self.df_returns.drop('Open', axis=1).values
+        labels = self.df_returns.FTSE
+        training_data = data_utils.TensorDataset(torch.tensor(features[:-n_test]).float().to(device),
+                                                 torch.tensor(labels[:-n_test]).float().to(device))
+        test_data = data_utils.TensorDataset(torch.tensor(features[n_test:]).float().to(device),
+                                             torch.tensor(labels[n_test:]).float().to(device))
+        train_dataloader = DataLoader(training_data, batch_size=batch_size, shuffle=False)
+        test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
+        return train_dataloader, test_dataloader
+
+
+
+class TFT:
+
+    """
+    Temporal Fusion Transformer
+
+    Setting up the model using PyTorch lighting.
+    The class determines the main key features of the model, listed below:
+
+    Tuneable Hyperparameters:
+        int prediction length
+        str   features
+        int   max encoder length
+        int   training cutoff
+        str   time index
+        str   group ids
+        int   min encoder length
+        int   min prediction length
+        str   target
+        int   max epochs
+        int   gpus
+        int   learning rate
+        int   hidden layer size
+        int   drop out
+        int   hidden continous size
+        int   output size
+        int   attention head size
+        float loss function
+
+    """
+
+    def __init__(self, prediction_length = 500):
+        self.prediction_length = prediction_length
         self.training = None
         self.validation = None
         self.trainer = None
         self.model = None
-        self.batch_size = 128
+        self.batch_size =16
 
     def load_data(self):
-        dataset = SP500ReturnsDataSet()
+        dataset = FTSEDataSet()
+        print("Dataset",dataset)
         sp_df = dataset.load(binary=False)
-
-        time_index = "date"
-        target = "SPY"
+        print(dataset)
+        time_index = "Date"
+        target = "Open"
         features = sp_df.columns.tolist()
+        print("Features",features)
         features.remove(target)
 
         sp_df[time_index] = pd.to_datetime(sp_df.index)
         min_date = sp_df[time_index].min()
         sp_df[time_index] = (sp_df[time_index] - min_date).dt.days
 
-        sp_df["SPY_Prediction"] = "SPY"
-
-        max_encoder_length = 24
+        sp_df["Open_Prediction"] = "Open"
+        print("sp_df",sp_df)
+        max_encoder_length = 4192
         training_cutoff = sp_df[time_index].max() - self.prediction_length
+        print("Training cutoff",training_cutoff)
+        print('time_idx',time_index)
+        print("Sp_dftp2",sp_df[lambda x: x[time_index] <= training_cutoff])
 
         self.training = TimeSeriesDataSet(
             sp_df[lambda x: x[time_index] <= training_cutoff],
-            time_idx=time_index,
-            target=target,
-            group_ids=["SPY_Prediction"],
-            min_encoder_length=max_encoder_length // 2,  # keep encoder length long (as it is in the validation set)
-            max_encoder_length=max_encoder_length,
+            time_idx=time_index,#changed here
+            target="Open",
+            categorical_encoders={"Open_Prediction": NaNLabelEncoder().fit(sp_df.Open_Prediction)},
+            group_ids=["Open_Prediction"],#"Open_Prediction"
+            min_encoder_length= max_encoder_length // 2 , # keep encoder length long (as it is in the validation set)
+            max_encoder_length=max_encoder_length ,
             min_prediction_length=1,
             max_prediction_length=self.prediction_length,
             time_varying_unknown_reals=features,
@@ -55,6 +185,7 @@ class TFTSP500:
             add_encoder_length=True,
             allow_missing_timesteps=True
         )
+        print(self.training.get_parameters())
 
         # create validation set (predict=True) which means to predict the last max_prediction_length points in time
         # for each series
@@ -67,21 +198,20 @@ class TFTSP500:
         logger = TensorBoardLogger("lightning_logs")  # logging results to a tensorboard
 
         self.trainer = pl.Trainer(
-            max_epochs=30,
+            max_epochs=1,
             gpus=0,
             weights_summary="top",
             gradient_clip_val=0.1,
-            limit_train_batches=30,  # coment in for training, running valiation every 30 batches
-            # fast_dev_run=True,  # comment in to check that networkor dataset has no serious bugs
+            limit_train_batches=30,
             callbacks=[lr_logger, early_stop_callback],
             logger=logger,
         )
 
-        self.mdel = TemporalFusionTransformer.from_dataset(
+        self.model = TemporalFusionTransformer.from_dataset(
             self.training,
             # not meaningful for finding the learning rate but otherwise very important
-            learning_rate=0.03,
-            hidden_size=16,  # most important hyperparameter apart from learning rate
+            learning_rate=0.05,
+            hidden_size= 8,  # most important hyperparameter apart from learning rate
             # number of attention heads. Set to up to 4 for large datasets
             attention_head_size=1,
             dropout=0.1,  # between 0.1 and 0.3 are good values
@@ -105,7 +235,7 @@ class TFTSP500:
             val_dataloaders=val_dataloader,
         )
 
-    def evaluate(self, number_of_examples = 1):
+    def evaluate(self, number_of_examples = 15):
         # load the best model according to the validation loss
         # (given that we use early stopping, this is not necessarily the last epoch)
         best_model_path = self.trainer.checkpoint_callback.best_model_path
@@ -114,8 +244,30 @@ class TFTSP500:
         # raw predictions are a dictionary from which all kind of information including quantiles can be extracted
         val_dataloader = self.validation.to_dataloader(train=False, batch_size=self.batch_size * 10, num_workers=0)
         raw_predictions, x = best_tft.predict(val_dataloader, mode="raw", return_x=True)
-
+        #print('raw_predictions', raw_predictions)
         for idx in range(number_of_examples):  # plot 10 examples
             best_tft.plot_prediction(x, raw_predictions, idx=idx, add_loss_to_title=True);
 
+        predictions, x = best_tft.predict(val_dataloader, return_x=True)
+        #print('predictions2', predictions)
+        #print('x values', x)
+        predictions_vs_actuals = best_tft.calculate_prediction_actual_by_variable(x, predictions)
+        #print('predictions_vs_actuals', predictions_vs_actuals)
+        best_tft.plot_prediction_actual_by_variable(predictions_vs_actuals);
+        #best_tft.plot(predictions,x)
+        # print(best_tft)
+
+
+
+def tft():
+    tft = TFT()
+    tft.load_data()
+    tft.create_tft_model()
+    tft.train()
+    #torch.save(tft,"Model.pickle")
+    tft.evaluate(number_of_examples=1)
+    plt.show()
+
+
+tft()
 

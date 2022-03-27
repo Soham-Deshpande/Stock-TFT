@@ -16,10 +16,13 @@ class MultiHeadAttention(nn.Module):
     """
     Multi-head attention
 
-
-
-
-
+    1. Linear -> Tanh
+    2. Unsqueze
+    3. Softmax
+    4. Unsqueeze
+    5. Repeat
+    6. Transpose
+    7. Output Tensor
 
     """
     def __init__(self, key_size, query_size, value_size, num_hiddens,
