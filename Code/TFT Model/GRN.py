@@ -10,7 +10,7 @@
 # ----------------------------------------------------#
 
 from Activation_functions import ELU, Sigmoid
-from Imports import nn
+from Imports import nn, torch
 from Temporal_Layer import *
 from GLU import *
 
@@ -43,7 +43,7 @@ class GRN(nn.Module):
         self.output_size  = output_size
         self.dropout      = dropout
         self.is_temporal  = is_temporal
-        self.context_size = context_size
+        self.c = context_size
 
         if self.input_size != self.output_size:
                 self.skip_layer = TemporalLayer(nn.Linear(self.input_size,
@@ -68,12 +68,17 @@ class GRN(nn.Module):
         self.gate = TemporalLayer(GLU(self.output_size))
         self.layer_norm = TemporalLayer(nn.BatchNorm1d(self.output_size))
 
-    def forward(self, x):
-        a = F.elu(self.c(x))
-        a = self.dropout(self.fc2(a))
+    def forward(self, x, c=None):
+        a = nn.ELU(self.c(x))
+        a = self.dropout(self.dense2(a))
 
         a = self.gate(a)
 
         if(self.skip != None):
             return self.norm(self.skip(x) + a)
         return self.norm(x + a)
+
+
+
+
+

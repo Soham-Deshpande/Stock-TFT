@@ -18,8 +18,6 @@ from datetime import datetime
 import os
 import warnings
 import requests
-import yfinance as yf
-import bs4 as bs
 import psycopg
 import math
 

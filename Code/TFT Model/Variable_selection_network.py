@@ -10,15 +10,15 @@
 # ----------------------------------------------------#
 
 from Imports import *
-from GRN import *
+#from GRN import *
 import torch
 import torch.nn as nn
-class VariableSelectionNetwork:
+class VariableSelectionNetwork(nn.Module):
 
     """
     VariableSelectionNetwork
 
-    VRN(x) =
+    VRN(x) = GRN(x) x GRN(x) x Softmax(GRN(x))
 
     Args:
         int input_size : Size of input tensor
@@ -33,11 +33,11 @@ class VariableSelectionNetwork:
         self.hidden_size = hidden_size
         self.output_size = output_size
         self.dropout    = dropout
-        self.flattened_inputs = GRN(self.output_size*self.input_size,
+        self.flattened_inputs = nn.GRN(self.output_size*self.input_size,
                                                      self.hidden_size, self.output_size,
                                                      self.dropout)
         self.softmax = nn.Softmax(dim=-1)
-        self.transformed_inputs = nn.ModuleList([GRN(
+        self.transformed_inputs = nn.ModuleList([nn.GRN(
                 self.input_size, self.hidden_size, self.hidden_size,
                 self.dropout) for i in range(self.output_size)])
 
@@ -69,3 +69,9 @@ class VariableSelectionNetwork:
 
         return combined, sparse_weight
 
+
+#vsn = VariableSelectionNetwork(2,2,4,0.1)
+#x = torch.tensor(np.array([[1, 2, 3], [4, 5, 6]]))
+#y = torch.tensor(np.array([[1, 2, 3]]))
+
+#print(vsn.forward(1))

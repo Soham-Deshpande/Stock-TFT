@@ -9,12 +9,16 @@
 #
 # ----------------------------------------------------#
 
-
+#from d2l import torch as d2l
 import torch.nn as nn
-
+import torch
 class MultiHeadAttention(nn.Module):
     """
     Multi-head attention
+
+    Implement Multihead attention
+    Accept tensors as inputs
+    Output an attention score
 
     1. Linear -> Tanh
     2. Unsqueze
@@ -29,7 +33,8 @@ class MultiHeadAttention(nn.Module):
                  num_heads, dropout, bias=False):
         super(MultiHeadAttention, self).__init__()
         self.num_heads = num_heads
-        self.attention = d2l.DotProductAttention(dropout)
+        #self.attention = torch.dot(dropout)
+        self.attention = dropout
         self.W_q = nn.Linear(query_size, num_hiddens, bias=bias)#define query vector
         self.W_k = nn.Linear(key_size, num_hiddens, bias=bias)#define key vector
         self.W_v = nn.Linear(value_size, num_hiddens, bias=bias)#define value vector
@@ -53,11 +58,14 @@ class MultiHeadAttention(nn.Module):
         # (`batch_size`, no. of queries, `num_hiddens`)
         output_concat = transpose_output(output, self.num_heads)
         return self.W_o(output_concat)
-    #To allow for parallel computation of multiple heads, the above
-    #MultiHeadAttention class uses two transposition functions as defined below.
-    #Specifically, the transpose_output function reverses the operation of the transpose_qkv function.
+
+
     def transpose_qkv(X, num_heads):
-        """Transposition for parallel computation of multiple attention heads."""
+        """
+        Transposition allows for parallel computation of multiple
+        attention heads.
+
+        """
         # Shape of input `X`:
         # (`batch_size`, no. of queries or key-value pairs, `num_hiddens`).
         # Shape of output `X`:
@@ -77,9 +85,19 @@ class MultiHeadAttention(nn.Module):
 
 
     def transpose_output(X, num_heads):
-        """Reverse the operation of `transpose_qkv`."""
+        """
+        Reverse the operation of `transpose_qkv`
+        """
         X = X.reshape(-1, num_heads, X.shape[1], X.shape[2])
         X = X.permute(0, 2, 1, 3)
         return X.reshape(X.shape[0], X.shape[1], -1)
 
 
+#import numpy as np
+#v = torch.Tensor([[1, 2, 3], [4, 5, 6]])
+#print(v)
+
+#x = MultiHeadAttention(2,2,2,2,1,v)
+#print(x.forward)
+#print(x.transpose_qkv)
+#print(x.transpose_output)

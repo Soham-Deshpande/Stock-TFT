@@ -12,8 +12,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from Activation_functions import *
+import torch
 import torch.nn as nn
-
+from torch.autograd import Variable
 
 
 class LSTM(nn.Module):
@@ -48,9 +49,9 @@ class LSTM(nn.Module):
         self.relu = nn.ReLU()
 
     def forward(self,x):
-        h_0 = Variable(torch.zeros(self.num_layers, x.size(0),
+        h_0 = Variable(torch.zeros(self.num_layers,x.size(0),
             self.hidden_size)) #hidden state
-        c_0 = Variable(torch.zeros(self.num_layers, x.size(0),
+        c_0 =Variable( torch.zeros(self.num_layers, x.size(0),
             self.hidden_size)) #internal state
         # Propagate input through LSTM
         output, (hn, cn) = self.lstm(x, (h_0, c_0)) #lstm with input,
@@ -63,6 +64,17 @@ class LSTM(nn.Module):
         out = self.fc(out) #Final Output
         return out
 
+
+#x = lstm(1,1,2,2,2)
+#print(x)
+
+#test = LSTM(1,1,2,2,2)
+#print(test)
+#a = torch.Tensor([[0,1,2],[3,4,5],[6,7,8]])
+#a.unsqueeze_(-1)
+#a = a.expand(3,3,1)
+#print(a)
+#print(test.forward(a))
 
 
 

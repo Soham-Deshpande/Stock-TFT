@@ -8,7 +8,7 @@
 #
 #
 # ----------------------------------------------------#
-from Import import nn
+from Imports import nn
 
 class LayerNormalisation(nn.Module):
     """
@@ -22,7 +22,7 @@ class LayerNormalisation(nn.Module):
 
     """
     def __init__(self, shape, eps, elementwise_affine= True):
-        super(LayerNorm, self).__init__()
+        super(LayerNormalisation,self).__init__()
         if isinstance(shape):
             self.normalized_shape = tuple(shape)
             self.eps = eps
@@ -40,6 +40,4 @@ class LayerNormalisation(nn.Module):
     def forward(self, input):
         return F.layer_norm(
             input, self.normalized_shape, self.weight, self.bias, self.eps)
-
-
 

@@ -7,7 +7,7 @@
 #------------------#
 
 from Activation_functions import *
-from  Variable_selection_network import *
+#from  Variable_selection_network import *
 from GLU import *
 from Dense_Network import *
 from Attention_module import *
@@ -17,18 +17,42 @@ from LSTM import *
 from Temporal_Layer import *
 from Time_Distributed import *
 
-
+from PytorchForecasting import *
+from Imports import *
 class TemporalFusionTransformer(nn.Module):
+    """
+    Temporal Fusion Transformer
+
+    In this file the different modules are assembled.
+
+    1. Variable Selection Network
+    2. LSTM Encoder
+    3. Normalisation
+    4. GRN
+    5. MutiHead Attention
+    6. Normalisation
+    7. GRN
+    8. Normalisation
+    9. Dense network
+    10.Quantile outputs
+
+    The final model being run is the Pytorch model and not the
+    one made from scratch for reasons listed in the writeup
+
+    """
+
+
+
     def __init__(self, n_var_past_cont, n_var_future_cont, n_var_past_disc,
             n_var_future_disc , dim_model, n_quantiles = 3, dropout_r = 0.1,
             n_lstm_layers = 1, n_attention_layers = 1, n_heads = 4):
 
         super(TemporalFusionTransformer, self).__init__()
-        self.vs_past = VariableSelectionNetwork(n_var_past_cont, n_var_past_disc, dim_model, dropout_r = dropout_r)
-        self.vs_future = VariableSelectionNetwork(n_var_future_cont, n_var_future_disc, dim_model, dropout_r = dropout_r)
+        #self.vs_past = VariableSelectionNetwork(n_var_past_cont, n_var_past_disc, dim_model, dropout_r = dropout_r)
+        #self.vs_future = VariableSelectionNetwork(n_var_future_cont, n_var_future_disc, dim_model, dropout_r = dropout_r)
 
-        self.enc = LSTMLayer(dim_model, dropout_r = dropout_r, n_layers = n_lstm_layers)
-        self.dec = LSTMLayer(dim_model, dropout_r = dropout_r, n_layers = n_lstm_layers)
+        self.enc = LSTM(dim_model, n_layers = n_lstm_layers)
+        self.dec = LSTM(dim_model, n_layers = n_lstm_layers)
 
         self.gate1 = GLU(dim_model)
         self.norm1 = nn.LayerNorm(dim_model)
@@ -89,6 +113,3 @@ class TemporalFusionTransformer(nn.Module):
         self.enc.reset(batch_size, gpu)
         self.dec.reset(batch_size, gpu)
 
-
-TFT = TemporalFusionTransformer(1,1,1,1,1)
-print(TFT)

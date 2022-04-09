@@ -18,8 +18,6 @@ import datetime
 import time
 import pandas as pd
 import numpy as np
-import requests
-import bs4 as bs
 import os
 import pickle
 import matplotlib.pyplot as plt
@@ -57,13 +55,13 @@ class FTSEDataSet:
     def __init__(self, start=datetime.datetime(2010, 1, 1), stop=datetime.datetime.now()):
         self.df_returns = None
         self.stocks_file_name = "/home/soham/Documents/PycharmProjects/NEA/Code/Data/NEAFTSE2010-21.csv"
-        self.start = start
-        self.stop = stop
+        #self.start = start
+        #self.stop = stop
 
     def load(self, binary = True):
 
-        start = self.start
-        end = self.stop
+        #start = self.start
+        #end = self.stop
 
         df0 = pd.read_csv(self.stocks_file_name, index_col=0, parse_dates=True)
         print(df0)
@@ -138,7 +136,7 @@ class TFT:
 
     """
 
-    def __init__(self, prediction_length = 500):
+    def __init__(self, prediction_length = 2000):
         self.prediction_length = prediction_length
         self.training = None
         self.validation = None
@@ -147,33 +145,39 @@ class TFT:
         self.batch_size =16
 
     def load_data(self):
+        """
+        Load data using the FTSEDataSet class
+        Set prediction and encoder lengths
+        Set up training data using TimeSeriesDataSet function
+        """
+
         dataset = FTSEDataSet()
         print("Dataset",dataset)
-        sp_df = dataset.load(binary=False)
+        ftse_df = dataset.load(binary=False)
         print(dataset)
         time_index = "Date"
         target = "Open"
-        features = sp_df.columns.tolist()
+        features = ftse_df.columns.tolist()
         print("Features",features)
         features.remove(target)
 
-        sp_df[time_index] = pd.to_datetime(sp_df.index)
-        min_date = sp_df[time_index].min()
-        sp_df[time_index] = (sp_df[time_index] - min_date).dt.days
+        ftse_df[time_index] = pd.to_datetime(ftse_df.index)
+        min_date = ftse_df[time_index].min()
+        ftse_df[time_index] = (ftse_df[time_index] - min_date).dt.days
 
-        sp_df["Open_Prediction"] = "Open"
-        print("sp_df",sp_df)
+        ftse_df["Open_Prediction"] = "Open"
+        print("ftse_df",ftse_df)
         max_encoder_length = 4192
-        training_cutoff = sp_df[time_index].max() - self.prediction_length
+        training_cutoff = ftse_df[time_index].max() - self.prediction_length
         print("Training cutoff",training_cutoff)
         print('time_idx',time_index)
-        print("Sp_dftp2",sp_df[lambda x: x[time_index] <= training_cutoff])
+        print("ftse_dftp2",ftse_df[lambda x: x[time_index] <= training_cutoff])
 
         self.training = TimeSeriesDataSet(
-            sp_df[lambda x: x[time_index] <= training_cutoff],
+            ftse_df[lambda x: x[time_index] <= training_cutoff],
             time_idx=time_index,#changed here
             target="Open",
-            categorical_encoders={"Open_Prediction": NaNLabelEncoder().fit(sp_df.Open_Prediction)},
+            categorical_encoders={"Open_Prediction": NaNLabelEncoder().fit(ftse_df.Open_Prediction)},
             group_ids=["Open_Prediction"],#"Open_Prediction"
             min_encoder_length= max_encoder_length // 2 , # keep encoder length long (as it is in the validation set)
             max_encoder_length=max_encoder_length ,
@@ -189,16 +193,37 @@ class TFT:
 
         # create validation set (predict=True) which means to predict the last max_prediction_length points in time
         # for each series
-        self.validation = TimeSeriesDataSet.from_dataset(self.training, sp_df, predict=True, stop_randomization=True)
+        self.validation = TimeSeriesDataSet.from_dataset(self.training, ftse_df, predict=True, stop_randomization=True)
 
     def create_tft_model(self):
+        """
+        Create the model
+        Define hyperparameters
+        Declare input, hidden, drop out, attention head and output size
+        Declare epochs
+
+
+        TFT Design
+            1. Variable Selection Network
+            2. LSTM Encoder
+            3. Normalisation
+            4. GRN
+            5. MutiHead Attention
+            6. Normalisation
+            7. GRN
+            8. Normalisation
+            9. Dense network
+            10.Quantile outputs
+
+
+        """
         # configure network and trainer
         early_stop_callback = EarlyStopping(monitor="val_loss", min_delta=1e-4, patience=10, verbose=False, mode="min")
         lr_logger = LearningRateMonitor()  # log the learning rate
         logger = TensorBoardLogger("lightning_logs")  # logging results to a tensorboard
 
         self.trainer = pl.Trainer(
-            max_epochs=1,
+            max_epochs=10,
             gpus=0,
             weights_summary="top",
             gradient_clip_val=0.1,
@@ -211,11 +236,11 @@ class TFT:
             self.training,
             # not meaningful for finding the learning rate but otherwise very important
             learning_rate=0.05,
-            hidden_size= 8,  # most important hyperparameter apart from learning rate
+            hidden_size= 4,  # most important hyperparameter apart from learning rate
             # number of attention heads. Set to up to 4 for large datasets
             attention_head_size=1,
             dropout=0.1,  # between 0.1 and 0.3 are good values
-            hidden_continuous_size=8,  # set to <= hidden_size
+            hidden_continuous_size=4,  # set to <= hidden_size
             output_size=7,  # 7 quantiles by default
             loss=QuantileLoss(),
             # reduce learning rate if no improvement in validation loss after x epochs
@@ -236,6 +261,12 @@ class TFT:
         )
 
     def evaluate(self, number_of_examples = 15):
+        """
+        Evaluate the model
+        Load the saved model from the last saved epoch
+        Compare predictions against real values
+        Create graphs to visualise performance
+        """
         # load the best model according to the validation loss
         # (given that we use early stopping, this is not necessarily the last epoch)
         best_model_path = self.trainer.checkpoint_callback.best_model_path
@@ -269,5 +300,8 @@ def tft():
     plt.show()
 
 
-tft()
+
+
+
+
 
