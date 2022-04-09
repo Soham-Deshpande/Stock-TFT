@@ -113,3 +113,5 @@ class TemporalFusionTransformer(nn.Module):
         self.enc.reset(batch_size, gpu)
         self.dec.reset(batch_size, gpu)
 
+
+TFT = tft()
