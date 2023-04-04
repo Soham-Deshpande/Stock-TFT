@@ -17,5 +17,5 @@ The project write up can be read [here](https://github.com/Soham-Deshpande/Stock
  
 Use intructions:
       1. pip install -r requirements.txt
-      2. run main.py
+      2. run PytorchForecasting.py
 
